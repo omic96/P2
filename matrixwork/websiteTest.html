@@ -1,0 +1,27 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+<script>
+
+function Matrix(m, n, d){
+    var mat = Array.apply(null, new Array(m)).map(
+        Array.prototype.valueOf,
+        Array.apply(null, new Array(n)).map(
+            function() {
+               return d;
+            }
+        )
+    );
+    return mat;
+}
+
+let emptyMatrix = Matrix(610,9742,0);
+
+</script>
+	</body>
+
+</html>
