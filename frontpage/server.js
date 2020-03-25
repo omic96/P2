@@ -46,5 +46,5 @@ for(let i = 0; i < movie_list_result.length; i++) {
 
 io.on('connection', function (socket) {
 
-	socket.emit("hej", movie_name_array);
+	socket.emit("send_movie_array", movie_name_array);
 });
