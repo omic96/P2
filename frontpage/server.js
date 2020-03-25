@@ -37,7 +37,7 @@ for(let i = 0; i < movie_list_result.length; i++) {
 		    return response.json();
 		  })
 		  .then((data) => {
-		    movie_list_result[i].posterImg = "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + data.results[0].poster_path;
+		    movie_list_result[i].poster_img = "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + data.results[0].poster_path;
 		  });
 		movie_name_array.push(movie_list_result[i]);
 	}
