@@ -9,82 +9,82 @@
 <body>
 
 	<h2>Gyser film </h2>
-	<div class="movieSection" id="movieHorror">
+	<div class="movie_section" id="movie_horror">
 
 	</div>
 	
 	<h2>Action film </h2>
-	<div class="movieSection" id="movieAction">
+	<div class="movie_section" id="movie_action">
 	</div>
 	<h2>Komedie</h2>
-	<div class="movieSection" id="movieComedy">
+	<div class="movie_section" id="movie_comedy">
 		
 	</div>
 	<h2>Romantiske film</h2>
-	<div class="movieSection" id="movieRomantic">
+	<div class="movie_section" id="movie_romantic">
 		
 	</div>
 
 	<script>
 		let socket = io();
 
-		let allMovies = [];
-		socket.on("hej", function(data) {
-			allMovies = data;
+		let all_movies = [];
+		socket.on("send_movie_array", function(data) {
+			all_movies = data;
 		});
 
 		setTimeout(function(){ 
-			for(let i = 0; i < allMovies.length; i++) {
-			if(allMovies[i].genres.includes("Action")) {
-				let actionSection = document.getElementById("movieAction");
-				let movieText = document.createElement("img");
-				if(allMovies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movieText.src = allMovies[i].posterImg;
+			for(let i = 0; i < all_movies.length; i++) {
+			if(all_movies[i].genres.includes("Action")) {
+				let action_section = document.getElementById("movie_action");
+				let movie_text = document.createElement("img");
+				if(all_movies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
+				movie_text.src = all_movies[i].posterImg;
 				}else{
-				movieText.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movieText.className = "movieImages";
-				actionSection.appendChild(movieText);
-				movieText.alt = allMovies[i].title;
+				movie_text.className = "movie_images";
+				action_section.appendChild(movie_text);
+				movie_text.alt = all_movies[i].title;
 			}
 
-			if(allMovies[i].genres.includes("Romance")) {
-				let actionSection = document.getElementById("movieRomantic");
-				let movieText = document.createElement("img");
-				if(allMovies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movieText.src = allMovies[i].posterImg;
+			if(all_movies[i].genres.includes("Romance")) {
+				let action_section = document.getElementById("movie_romantic");
+				let movie_text = document.createElement("img");
+				if(all_movies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
+				movie_text.src = all_movies[i].posterImg;
 				}else{
-				movieText.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movieText.className = "movieImages";
-				actionSection.appendChild(movieText);
-								movieText.alt = allMovies[i].title;
+				movie_text.className = "movie_images";
+				action_section.appendChild(movie_text);
+				movie_text.alt = all_movies[i].title;
 
 			}
 
-			if(allMovies[i].genres.includes("Comedy")) {
-				let actionSection = document.getElementById("movieComedy");
-				let movieText = document.createElement("img");
-				if(allMovies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movieText.src = allMovies[i].posterImg;
+			if(all_movies[i].genres.includes("Comedy")) {
+				let action_section = document.getElementById("movie_comedy");
+				let movie_text = document.createElement("img");
+				if(all_movies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
+				movie_text.src = all_movies[i].posterImg;
 				}else{
-				movieText.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movieText.className = "movieImages";
-				movieText.alt = allMovies[i].title;
-				actionSection.appendChild(movieText);
+				movie_text.className = "movie_images";
+				movie_text.alt = all_movies[i].title;
+				action_section.appendChild(movie_text);
 			}
 
-			if(allMovies[i].genres.includes("Horror")) {
-				let actionSection = document.getElementById("movieHorror");
-				let movieText = document.createElement("img");
-				if(allMovies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movieText.src = allMovies[i].posterImg;
+			if(all_movies[i].genres.includes("Horror")) {
+				let action_section = document.getElementById("movie_horror");
+				let movie_text = document.createElement("img");
+				if(all_movies[i].posterImg != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
+				movie_text.src = all_movies[i].posterImg;
 				}else{
-				movieText.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movieText.className = "movieImages";
-				actionSection.appendChild(movieText);
+				movie_text.className = "movie_images";
+				action_section.appendChild(movie_text);
 			}
 		} 
 
