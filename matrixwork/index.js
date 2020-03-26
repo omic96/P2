@@ -102,8 +102,13 @@ function fill_empty_ratings() {
 function get_user_ratings(userId) {
 	let currentUserRow = users[userId]
 	for (i = 0; i < currentMovieIndex; i++) {
-		user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
-		console.log(user_database);
+		// Only print something if the user has given a rating to this movie
+		if (userMovieMatrix[currentUserRow][i]) {
+			
+			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
+			
+			console.log(user_database);
+		}
 	}
 }
 
