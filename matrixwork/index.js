@@ -1,5 +1,5 @@
-var ratingData = require('./ratings.json');
-var movieData = require('./movies.json');
+var ratingData = require('./ratings_data.json');
+var movieData = require('./data_2.json');
 
 // To know what column or row a specific movie or user belongs to
 // KEY: User or Movie ID's 
@@ -22,16 +22,30 @@ var currentUserIndex = 0;
 // [X = Movies][Y = Users]
 var userMovieMatrix = [[]];
 
+// A variable to store the users data
+var user_database;
+
+//Class constructor
+class user_ratings {
+	constructor(userID, movieID, rating){
+		this.user   = userID;
+		this.movie  = movieID;
+		this.rating = rating;
+	}
+} 
+
 // Adds a rating to the matrix
-function addUserRating(user, movie, rating) {
+function add_user_rating(user, movie, rating) {
 	// The rows and columns to add the rating to
-	var userRow;
-	var movieColumn;
+	let userRow;
+	let movieColumn;
 
 	// Check if user already has a row
 	if (user in users) {
 		userRow = users[user];
-	} else {
+	} 
+	
+	else {
 		// Give the next empty row to the current user
 		userRow = currentUserIndex;
 		// Save the given row for this user in the dict
@@ -43,7 +57,9 @@ function addUserRating(user, movie, rating) {
 	// Check if movie already has a column
 	if (movie in movies) {
 		movieColumn = movies[movie];
-	} else {
+	} 
+	
+	else {
 		// Give the next empty column to the current movie
 		movieColumn = currentMovieIndex;
 		// Save the given column for this movie in the dict
@@ -57,39 +73,44 @@ function addUserRating(user, movie, rating) {
 	// Save the index of both the movie and the user to use for future lookups
 	userRows[userRow] = user;
 	movieColumns[movieColumn] = movie;
-
+	
 	// Add the rating to the matrix
 	userMovieMatrix[movieColumn][userRow] = rating;
+
 }
 
 // Prints the movie info and ratings for all rated movies by a user
-function getUserRatings(userId) {
+function get_user_ratings(userId) {
 	for (i = 0; i < currentMovieIndex; i++) {
 		// Only print something if the user has given a rating to this movie
 		if (userMovieMatrix[i][userId]) {
-			console.log(
-				"User: " + userId + " rated the movie:\n" 
+			
+			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[i][userId])
+			
+			console.log(user_database);
+			/*console.log(
+				"User: " + userId + " rated the movie: " 
 				+ movieList[movieColumns[i]].title 
-				+ "\nwith a rating of: " + userMovieMatrix[i][userId]);
+				+ " with a rating of: " + userMovieMatrix[i][userId]); */
+			}
 		}
 	}
-}
-
+	
 function main() {
 	// Add all entries
-	for (var entry in ratingData) {
-		var userID = ratingData[entry].userId; 
-		var movieID = ratingData[entry].movieId;
-		var rating = ratingData[entry].rating;
+	for (let entry in ratingData) {
+		let userID = ratingData[entry].userId; 
+		let movieID = ratingData[entry].movieId;
+		let rating = ratingData[entry].rating;
 		
-		addUserRating(userID, movieID, rating);
+		add_user_rating(userID, movieID, rating);
 	}
 
 	// Load movie data
-	for (var entry in movieData) {
-		var movieID = movieData[entry].movieId;
-		var movieTitle = movieData[entry].title;
-		var movieGenres = movieData[entry].genres;
+	for (let entry in movieData) {
+		let movieID = movieData[entry].movieId;
+		let movieTitle = movieData[entry].title;
+		let movieGenres = movieData[entry].genres;
 
 		movieList[movieID] = {
 			title: movieTitle,
@@ -97,7 +118,12 @@ function main() {
 		};
 	}
 
-	getUserRatings(1);
+	get_user_ratings(2);
+
 }
 
 main();
+
+
+
+
