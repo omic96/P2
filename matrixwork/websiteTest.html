@@ -5,21 +5,30 @@
 </head>
 
 <body>
+
+<table id="myTable">
+
+</table>
+
 <script>
 
-function Matrix(m, n, d){
-    var mat = Array.apply(null, new Array(m)).map(
-        Array.prototype.valueOf,
-        Array.apply(null, new Array(n)).map(
-            function() {
-               return d;
-            }
-        )
-    );
-    return mat;
+var testMatrix = [[4,4,7],[3,3,2],[4,1,2], [7,7,7]];
+
+let theTable = document.getElementById("myTable");
+//console.log(testMatrix.length);
+
+for(let i = 0; i <testMatrix.length; i++) {
+
+    let trElement = document.createElement("tr");
+    theTable.appendChild(trElement);
+
+for(let j = 0; j < testMatrix[i].length; j++) {
+        let thElement = document.createElement("th");
+        trElement.appendChild(thElement);
+        thElement.innerHTML = testMatrix[i][j];
+    }
 }
 
-let emptyMatrix = Matrix(610,9742,0);
 
 </script>
 	</body>
