@@ -75,7 +75,7 @@ function add_user_rating(user, movie, rating) {
 	movieColumns[movieColumn] = movie;
 	
 	// Add the rating to the matrix
-	userMovieMatrix[movieColumn][userRow] = rating;
+	userMovieMatrix[userRow][movieColumn] = rating;
 
 }
 
@@ -119,7 +119,8 @@ function main() {
 	}
 
 	get_user_ratings(2);
-
 }
+
+
 
 main();
