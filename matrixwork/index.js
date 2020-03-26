@@ -1,5 +1,5 @@
-var ratingData = require('./ratings.json');
-var movieData = require('./movies.json');
+var ratingData = require('./ratings_data.json');
+var movieData = require('./data_2.json');
 
 // To know what column or row a specific movie or user belongs to
 // KEY: User or Movie ID's 
