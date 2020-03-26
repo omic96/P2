@@ -6,25 +6,25 @@
 </head>
 
 
-<body>
+<body style="margin: 0;">
+	<div id="background" class="background">
+		<h2 class="genres_text">Gyser film </h2>
+		<div class="movie_section" id="movie_horror">
 
-	<h2>Gyser film </h2>
-	<div class="movie_section" id="movie_horror">
-
-	</div>
-	
-	<h2>Action film </h2>
-	<div class="movie_section" id="movie_action">
-	</div>
-	<h2>Komedie</h2>
-	<div class="movie_section" id="movie_comedy">
+		</div>
 		
+		<h2 class="genres_text">Action film </h2>
+		<div class="movie_section" id="movie_action">
+		</div>
+		<h2 class="genres_text">Komedie</h2>
+		<div class="movie_section" id="movie_comedy">
+			
+		</div>
+		<h2 class="genres_text">Romantiske film</h2>
+		<div class="movie_section" id="movie_romantic">
+			
+		</div>
 	</div>
-	<h2>Romantiske film</h2>
-	<div class="movie_section" id="movie_romantic">
-		
-	</div>
-
 	<script>
 		let socket = io();
 
@@ -37,54 +37,111 @@
 			for(let i = 0; i < all_movies.length; i++) {
 			if(all_movies[i].genres.includes("Action")) {
 				let action_section = document.getElementById("movie_action");
-				let movie_text = document.createElement("img");
+
+				let movie_container = document.createElement("div");
+				let movie_image = document.createElement("img");
+				let movie_overlay = document.createElement("div");
+				let movie_title_text = document.createElement("div");
+
+				action_section.appendChild(movie_container);
+				movie_container.appendChild(movie_overlay);
+				movie_container.appendChild(movie_image);
+				movie_overlay.appendChild(movie_title_text);
+
+				movie_container.className = "movie_container";
+				movie_overlay.className = "movie_overlay";
+				movie_title_text.className = "movie_title_text";
+				movie_image.className = "movie_images";
+
+				movie_title_text.innerHTML = all_movies[i].title;
+
 				if(all_movies[i].poster_img != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movie_text.src = all_movies[i].poster_img;
+				movie_image.src = all_movies[i].poster_img;
 				}else{
-				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_image.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movie_text.className = "movie_images";
-				action_section.appendChild(movie_text);
-				movie_text.alt = all_movies[i].title;
 			}
 
 			if(all_movies[i].genres.includes("Romance")) {
 				let action_section = document.getElementById("movie_romantic");
-				let movie_text = document.createElement("img");
+				
+				let movie_container = document.createElement("div");
+				let movie_image = document.createElement("img");
+				let movie_overlay = document.createElement("div");
+				let movie_title_text = document.createElement("div");
+
+				action_section.appendChild(movie_container);
+				movie_container.appendChild(movie_overlay);
+				movie_container.appendChild(movie_image);
+				movie_overlay.appendChild(movie_title_text);
+
+				movie_container.className = "movie_container";
+				movie_overlay.className = "movie_overlay";
+				movie_title_text.className = "movie_title_text";
+				movie_image.className = "movie_images";
+
+				movie_title_text.innerHTML = all_movies[i].title;
+
 				if(all_movies[i].poster_img != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movie_text.src = all_movies[i].poster_img;
+				movie_image.src = all_movies[i].poster_img;
 				}else{
-				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_image.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movie_text.className = "movie_images";
-				action_section.appendChild(movie_text);
-				movie_text.alt = all_movies[i].title;
 
 			}
 
 			if(all_movies[i].genres.includes("Comedy")) {
 				let action_section = document.getElementById("movie_comedy");
-				let movie_text = document.createElement("img");
+				
+				let movie_container = document.createElement("div");
+				let movie_image = document.createElement("img");
+				let movie_overlay = document.createElement("div");
+				let movie_title_text = document.createElement("div");
+
+				action_section.appendChild(movie_container);
+				movie_container.appendChild(movie_overlay);
+				movie_container.appendChild(movie_image);
+				movie_overlay.appendChild(movie_title_text);
+
+				movie_container.className = "movie_container";
+				movie_overlay.className = "movie_overlay";
+				movie_title_text.className = "movie_title_text";
+				movie_image.className = "movie_images";
+
+				movie_title_text.innerHTML = all_movies[i].title;
+
 				if(all_movies[i].poster_img != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movie_text.src = all_movies[i].poster_img;
+				movie_image.src = all_movies[i].poster_img;
 				}else{
-				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_image.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movie_text.className = "movie_images";
-				movie_text.alt = all_movies[i].title;
-				action_section.appendChild(movie_text);
 			}
 
 			if(all_movies[i].genres.includes("Horror")) {
 				let action_section = document.getElementById("movie_horror");
-				let movie_text = document.createElement("img");
+
+				let movie_container = document.createElement("div");
+				let movie_image = document.createElement("img");
+				let movie_overlay = document.createElement("div");
+				let movie_title_text = document.createElement("div");
+
+				action_section.appendChild(movie_container);
+				movie_container.appendChild(movie_overlay);
+				movie_container.appendChild(movie_image);
+				movie_overlay.appendChild(movie_title_text);
+
+				movie_container.className = "movie_container";
+				movie_overlay.className = "movie_overlay";
+				movie_title_text.className = "movie_title_text";
+				movie_image.className = "movie_images";
+
+				movie_title_text.innerHTML = all_movies[i].title;
+
 				if(all_movies[i].poster_img != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movie_text.src = all_movies[i].poster_img;
+				movie_image.src = all_movies[i].poster_img;
 				}else{
-				movie_text.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
+				movie_image.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
-				movie_text.className = "movie_images";
-				action_section.appendChild(movie_text);
 			}
 		} 
 
