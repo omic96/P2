@@ -32,7 +32,7 @@ class user_ratings {
 		this.movie  = movieID;
 		this.rating = rating;
 	}
-} 
+}
 
 // Adds a rating to the matrix
 function add_user_rating(user, movie, rating) {
@@ -91,7 +91,7 @@ function get_user_ratings(userId) {
 			/*console.log(
 				"User: " + userId + " rated the movie: " 
 				+ movieList[movieColumns[i]].title 
-				+ " with a rating of: " + userMovieMatrix[i][userId]); */
+				+ " with a rating of: " + userMovieMatrix[i][userId]);*/
 			}
 		}
 	}
@@ -123,7 +123,3 @@ function main() {
 }
 
 main();
-
-
-
-
