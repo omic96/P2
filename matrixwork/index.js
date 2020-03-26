@@ -58,7 +58,6 @@ function add_user_rating(user, movie, rating) {
 	if (movie in movies) {
 		movieColumn = movies[movie];
 	} 
-	
 	else {
 		// Give the next empty column to the current movie
 		movieColumn = currentMovieIndex;
@@ -83,9 +82,9 @@ function add_user_rating(user, movie, rating) {
 function get_user_ratings(userId) {
 	for (i = 0; i < currentMovieIndex; i++) {
 		// Only print something if the user has given a rating to this movie
-		if (userMovieMatrix[i][userId]) {
+		if (userMovieMatrix[userId][i]) {
 			
-			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[i][userId])
+			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[userId][i])
 			
 			console.log(user_database);
 			/*console.log(
@@ -118,7 +117,7 @@ function main() {
 		};
 	}
 
-	get_user_ratings(2);
+	get_user_ratings(0);
 }
 
 
