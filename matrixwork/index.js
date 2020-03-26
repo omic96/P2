@@ -34,6 +34,17 @@ class user_ratings {
 	}
 }
 
+// Loads and sends all ratings to be added
+function add_all_ratings() {
+	for (let entry in ratingData) {
+		let userID = ratingData[entry].userId;
+		let movieID = ratingData[entry].movieId;
+		let rating = ratingData[entry].rating;
+
+		add_user_rating(userID, movieID, rating);
+	}
+}
+
 // Adds a rating to the matrix
 function add_user_rating(user, movie, rating) {
 	// The rows and columns to add the rating to
@@ -75,33 +86,33 @@ function add_user_rating(user, movie, rating) {
 	
 	// Add the rating to the matrix
 	userMovieMatrix[userRow][movieColumn] = rating;
+}
 
+function fill_empty_ratings() {
+	for (i = 0; i < currentUserIndex; i++) {
+		for (j = 0; j < currentMovieIndex; j++) {
+			if(!userMovieMatrix[i][j]){
+				userMovieMatrix[i][j] = 0;
+			}
+		}	
+	}
 }
 
 // Prints the movie info and ratings for all rated movies by a user
 function get_user_ratings(userId) {
 	let currentUserRow = users[userId]
 	for (i = 0; i < currentMovieIndex; i++) {
-		// Only print something if the user has given a rating to this movie
-		if (userMovieMatrix[currentUserRow][i]) {
-			
-			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
-			
-			console.log(user_database);
-			}
-		}
+		user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
+		console.log(user_database);
 	}
-	
+}
+
+
 function main() {
 	// Add all entries
-	for (let entry in ratingData) {
-		let userID = ratingData[entry].userId; 
-		let movieID = ratingData[entry].movieId;
-		let rating = ratingData[entry].rating;
-		
-		add_user_rating(userID, movieID, rating);
-	}
-
+	add_all_ratings();
+	// Fill all empty entries
+	fill_empty_ratings()
 	// Load movie data
 	for (let entry in movieData) {
 		let movieID = movieData[entry].movieId;
@@ -113,8 +124,7 @@ function main() {
 			genres: movieGenres
 		};
 	}
-
-	get_user_ratings();
+	get_user_ratings(1);
 }
 
 
