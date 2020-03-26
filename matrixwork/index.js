@@ -84,7 +84,7 @@ function get_user_ratings(userId) {
 		// Only print something if the user has given a rating to this movie
 		if (userMovieMatrix[userId][i]) {
 			
-			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[userId][i])
+			user_database = new user_ratings(userId + 1, movieList[movieColumns[i]].title, userMovieMatrix[userId][i])
 			
 			console.log(user_database);
 			/*console.log(
@@ -117,7 +117,7 @@ function main() {
 		};
 	}
 
-	get_user_ratings(0);
+	get_user_ratings(6);
 }
 
 
