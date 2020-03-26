@@ -88,10 +88,6 @@ function get_user_ratings(userId) {
 			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
 			
 			console.log(user_database);
-			/*console.log(
-				"User: " + userId + " rated the movie: " 
-				+ movieList[movieColumns[i]].title 
-				+ " with a rating of: " + userMovieMatrix[i][userId]);*/
 			}
 		}
 	}
@@ -118,7 +114,7 @@ function main() {
 		};
 	}
 
-	get_user_ratings(0);
+	get_user_ratings();
 }
 
 
