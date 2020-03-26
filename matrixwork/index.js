@@ -80,11 +80,12 @@ function add_user_rating(user, movie, rating) {
 
 // Prints the movie info and ratings for all rated movies by a user
 function get_user_ratings(userId) {
+	let currentUserRow = users[userId]
 	for (i = 0; i < currentMovieIndex; i++) {
 		// Only print something if the user has given a rating to this movie
-		if (userMovieMatrix[users[userId][i]]) {
+		if (userMovieMatrix[currentUserRow][i]) {
 			
-			user_database = new user_ratings(userId + 1, movieList[movieColumns[i]].title, userMovieMatrix[users[userId][i]])
+			user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
 			
 			console.log(user_database);
 			/*console.log(
@@ -117,8 +118,7 @@ function main() {
 		};
 	}
 
-	get_user_ratings(6);
-	console.log(userMovieMatrix);
+	get_user_ratings(0);
 }
 
 
