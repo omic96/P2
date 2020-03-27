@@ -1,29 +1,29 @@
 const express = require('express');
-const express_layouts = require('express-ejs-layouts');
-const mongoose = require('mongoose');
+const ejs_express_layouts = require('express-ejs-layouts');
+const mongoose_database = require('mongoose');
 
-const app = express();
+const express_app = express();
 
 //Database Connect
-const db = require('./config/keys').MongoURI;
-mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
-.then(() => console.log("Connected to database..."))
-.catch(err => console.log(err));
+const data_base = require('./config/keys').MongoURI;
+mongoose_database.connect(data_base, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(() => console.log("Connected to database: " + data_base))
+.catch(err => console.log("ERROR:" + err));
 
 
 //EJS
-app.use(express_layouts);
-app.set('view engine', 'ejs');
+express_app.use(ejs_express_layouts);
+express_app.set('view engine', 'ejs');
 
 //Bodyparser
-app.use(express.urlencoded( { extended: false } ));
+express_app.use(express.urlencoded( { extended: false } ));
 
 //Routes
-app.use('/', require('./routes/index'));
-app.use('/users', require('./routes/users'));
+express_app.use('/', require('./routes/index'));
+express_app.use('/users', require('./routes/users'));
 
 
 //PORT to run app
-const port = process.env.PORT || 5000;
+const port = 5000;
 
-app.listen(port, console.log(`Server started on PORT ${port}`));
+express_app.listen(port, console.log(`SERVER START PORT: ${port}`));
