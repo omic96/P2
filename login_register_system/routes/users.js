@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 
 //User model
 const User = require('../models/User');
@@ -57,6 +58,12 @@ router.post('/register', (req, res) => {
             }
         });
     }
+});
+
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/movie_main_page'
+    })(req, res, next);
 });
 
 module.exports = router;
