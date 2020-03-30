@@ -89,7 +89,7 @@ function user_rates_movies(user_id, movies_to_rate){
 
     for (let i = 0; i <= movies_to_rate.length; i++) {
         rating = window.prompt("Rate " + movieList[movies_to_rate[i]].title + "from 1-5: "); 
-        user_rating = {user_id: user_id, movie_id : movies_to_rate[i], rating : rating, timestamp : 00}; //nyt objekt
+        user_rating = {userId: user_id, movieId : movies_to_rate[i], rating : rating, timestamp : 00}; //nyt objekt
         //gem i data fil
         //gem i user 
     }   
