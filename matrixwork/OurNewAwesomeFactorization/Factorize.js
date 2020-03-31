@@ -1,6 +1,6 @@
 var ratingData = require('./ratings_data.json');
 var movieData = require('./data_2.json');
-var math = require('https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.6.2/math.js');
+var math = require('mathjs');
 
 // To know what column or row a specific movie or user belongs to
 // KEY: User or Movie ID's 
@@ -138,9 +138,52 @@ main();
 
 let matrix = [[1,2,3],[4,0,6],[5,0,0],[6,5,1],[3,2,0]];
 
-console.log(math.transpose(matrix));
+factorize(userMovieMatrix, 2, 1);
 
-//function factorize(the_matrix, );
+let test1 = [[2,1],[4,1],[1,3][5,2]];
+let test2 = [[3,4,1,3],[1,2,4,1]];
+
+
+function factorize(the_matrix, latent_features, iterations) {
+
+    //Make the two factor matrices, 1 & 2, with random numbers.
+    factor_matrix1 = make_factor_matrix(latent_features,Object.keys(userRows).length);
+    factor_matrix2 = math.transpose(make_factor_matrix(latent_features,Object.keys(movieColumns).length));
+
+    for(let n = 0; n < iterations; n++) {
+        for(let i = 0; i < currentUserIndex; i++) {
+            for(let j = 0; j < currentMovieIndex; j++) {
+
+                //find current value of original matrix
+                let current_value = the_matrix[i][j];
+                //Only if the user rated this movie..
+                if(current_value > 0) {
+                    let error = current_value - math.multiply(factor_matrix1[0], math.column(factor_matrix2,0));
+                }
+
+
+            }
+        }
+    }
+
+    console.log("hej");
+
+};
+
+
+
+
+function make_factor_matrix (latent_features, count) {
+    let factor_matrix = [];
+    for(let i = 0; i < count; i++) {
+        factor_matrix.push([]);
+        for(let j = 0; j < latent_features; j++) {
+            factor_matrix[i].push(Math.random());
+        }
+    }
+
+    return factor_matrix;
+}
 
 
 
