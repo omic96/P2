@@ -136,19 +136,17 @@ function main() {
 
 main();
 
-let matrix = [[1,2,3],[4,0,6],[5,0,0],[6,5,1],[3,2,0]];
 
 factorize(userMovieMatrix, 2, 1);
-
-let test1 = [[2,1],[4,1],[1,3][5,2]];
-let test2 = [[3,4,1,3],[1,2,4,1]];
-
 
 function factorize(the_matrix, latent_features, iterations) {
 
     //Make the two factor matrices, 1 & 2, with random numbers.
-    factor_matrix1 = make_factor_matrix(latent_features,Object.keys(userRows).length);
-    factor_matrix2 = math.transpose(make_factor_matrix(latent_features,Object.keys(movieColumns).length));
+    factor_matrix1 = make_factor_matrix(latent_features,currentUserIndex);
+    factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
+
+
+
 
     for(let n = 0; n < iterations; n++) {
         for(let i = 0; i < currentUserIndex; i++) {
@@ -158,27 +156,24 @@ function factorize(the_matrix, latent_features, iterations) {
                 let current_value = the_matrix[i][j];
                 //Only if the user rated this movie..
                 if(current_value > 0) {
-                    let error = current_value - math.multiply(factor_matrix1[0], math.column(factor_matrix2,0));
+                    let error = current_value - math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));
                 }
-
-
             }
         }
     }
-
-    console.log("hej");
-
 };
 
 
-
+function column_vector(matrix, index) {
+    return matrix.map(m => m[index]);
+}
 
 function make_factor_matrix (latent_features, count) {
     let factor_matrix = [];
     for(let i = 0; i < count; i++) {
         factor_matrix.push([]);
         for(let j = 0; j < latent_features; j++) {
-            factor_matrix[i].push(Math.random());
+            factor_matrix[i].push(Math.round(Math.random() * 10) / 10);
         }
     }
 
