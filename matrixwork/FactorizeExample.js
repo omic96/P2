@@ -34,6 +34,17 @@ class user_ratings {
   }
 }
 
+// Loads and sends all ratings to be added
+function add_all_ratings() {
+  for (let entry in ratingData) {
+    let userID = ratingData[entry].userId;
+    let movieID = ratingData[entry].movieId;
+    let rating = ratingData[entry].rating;
+
+    add_user_rating(userID, movieID, rating);
+  }
+}
+
 // Adds a rating to the matrix
 function add_user_rating(user, movie, rating) {
   // The rows and columns to add the rating to
@@ -58,7 +69,6 @@ function add_user_rating(user, movie, rating) {
   if (movie in movies) {
     movieColumn = movies[movie];
   } 
-  
   else {
     // Give the next empty column to the current movie
     movieColumn = currentMovieIndex;
@@ -75,37 +85,39 @@ function add_user_rating(user, movie, rating) {
   movieColumns[movieColumn] = movie;
   
   // Add the rating to the matrix
-  userMovieMatrix[movieColumn][userRow] = rating;
+  userMovieMatrix[userRow][movieColumn] = rating;
+}
 
+function fill_empty_ratings() {
+  for (i = 0; i < currentUserIndex; i++) {
+    for (j = 0; j < currentMovieIndex; j++) {
+      if(!userMovieMatrix[i][j]){
+        userMovieMatrix[i][j] = 0;
+      }
+    } 
+  }
 }
 
 // Prints the movie info and ratings for all rated movies by a user
 function get_user_ratings(userId) {
+  let currentUserRow = users[userId]
   for (i = 0; i < currentMovieIndex; i++) {
     // Only print something if the user has given a rating to this movie
-    if (userMovieMatrix[i][userId]) {
+    if (userMovieMatrix[currentUserRow][i]) {
       
-      user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[i][userId])
+      user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
       
       console.log(user_database);
-      /*console.log(
-        "User: " + userId + " rated the movie: " 
-        + movieList[movieColumns[i]].title 
-        + " with a rating of: " + userMovieMatrix[i][userId]);*/
-      }
     }
   }
-  
+}
+
+
 function main() {
   // Add all entries
-  for (let entry in ratingData) {
-    let userID = ratingData[entry].userId; 
-    let movieID = ratingData[entry].movieId;
-    let rating = ratingData[entry].rating;
-    
-    add_user_rating(userID, movieID, rating);
-  }
-
+  add_all_ratings();
+  // Fill all empty entries
+  fill_empty_ratings()
   // Load movie data
   for (let entry in movieData) {
     let movieID = movieData[entry].movieId;
@@ -117,19 +129,21 @@ function main() {
       genres: movieGenres
     };
   }
-
-  //get_user_ratings(2);
-
+  //get_user_ratings(1);
 }
+
+let test1, test2;
 
 main();
 
-let newMatrix = factorizeMatrix(userMovieMatrix);
-console.log(newMatrix);
+let testMatrx = [[4,4,2,0],[2,0,4,2],[2,0,5,5],[3,0,2,0]];
 
-function factorizeMatrix(TARGET_MATRIX, LATENT_FEATURES_COUNT=2, ITERS=5000, LEARNING_RATE=0.0002, REGULARIZATION_RATE=0.02, THRESHOLD=0.001) {
-  const FACTOR1_ROW_COUNT = TARGET_MATRIX.length
-  const FACTOR2_ROW_COUNT = TARGET_MATRIX[0].length
+console.log(factorizeMatrix(userMovieMatrix));
+
+
+function factorizeMatrix(TARGET_MATRIX, LATENT_FEATURES_COUNT=7, ITERS=5000, LEARNING_RATE=0.0002, REGULARIZATION_RATE=0.02, THRESHOLD=0.001) {
+  const FACTOR1_ROW_COUNT = currentUserIndex
+  const FACTOR2_ROW_COUNT = currentMovieIndex
   const factorMatrix1 = fillMatrix(FACTOR1_ROW_COUNT, LATENT_FEATURES_COUNT, () => Math.random())
   const factorMatrix2 = fillMatrix(FACTOR2_ROW_COUNT, LATENT_FEATURES_COUNT, () => Math.random())
   const transposedFactorMatrix2 = transpose(factorMatrix2)
@@ -173,7 +187,7 @@ function factorizeMatrix(TARGET_MATRIX, LATENT_FEATURES_COUNT=2, ITERS=5000, LEA
   
     // Calculating totalError
     const TOTAL_ERROR = calculateError(ROW_COUNT, COLUMN_COUNT, TARGET_MATRIX, LATENT_FEATURES_COUNT, REGULARIZATION_RATE, factorMatrix1, transposedFactorMatrix2)
-
+      console.log(TOTAL_ERROR);
     // Complete factorization process if total error falls below a certain threshold
     if (TOTAL_ERROR < THRESHOLD) return
   })
