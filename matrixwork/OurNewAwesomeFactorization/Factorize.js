@@ -137,16 +137,20 @@ function main() {
 main();
 
 
-factorize(userMovieMatrix, 2, 1);
+let newMatrix = factorize(userMovieMatrix, 13, 500,0.002);
 
-function factorize(the_matrix, latent_features, iterations) {
+/*/
+for(let i = 0; i < 20; i++) {
+  for(let j = 0; j < 20; j++) {
+    console.log(newMatrix[i][j], userMovieMatrix[i][j]);
+  }
+}
+/*/
+function factorize(the_matrix, latent_features, iterations, learning_rate) {
 
     //Make the two factor matrices, 1 & 2, with random numbers.
     factor_matrix1 = make_factor_matrix(latent_features,currentUserIndex);
     factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
-
-
-
 
     for(let n = 0; n < iterations; n++) {
         for(let i = 0; i < currentUserIndex; i++) {
@@ -157,15 +161,31 @@ function factorize(the_matrix, latent_features, iterations) {
                 //Only if the user rated this movie..
                 if(current_value > 0) {
                     let error = current_value - math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));
+
+
+                    //Lets change the numbers in each factor matrix...
+                    for(let k = 0; k < latent_features; k++) {
+                       let factor_matrix1_latent_feature = factor_matrix1[i][k];
+                       let factor_matrix2_latent_feature = factor_matrix2[k][j];
+
+                        factor_matrix1[i][k] = update_latent_feature(factor_matrix1_latent_feature,factor_matrix2_latent_feature,error,learning_rate);
+                        factor_matrix2[k][j] = update_latent_feature(factor_matrix2_latent_feature,factor_matrix1_latent_feature,error,learning_rate);
+                    }
                 }
             }
         }
     }
-};
+    console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2));
+    return math.multiply(factor_matrix1,factor_matrix2);
+}
+
+function update_latent_feature(latent1, latent2, error, learning_rate) {
+    return latent1 + 2 * learning_rate * error * latent2;
+}
 
 
 function column_vector(matrix, index) {
-    return matrix.map(m => m[index]);
+    return matrix.map(m => m[index]); 
 }
 
 function make_factor_matrix (latent_features, count) {
@@ -182,11 +202,20 @@ function make_factor_matrix (latent_features, count) {
 
 
 
-function find_rmse (the_matrix, factorized_matrix) {
-    for(let i = 0; i < Object.keys(userRows).length; i++) {
-        for(let j = 0; j < Object.keys(movieColumns).length; j++) {
-        
-            console.log(userMovieMatrix[i][j]);
+function find_rmse (the_matrix, factor_matrix1, factor_matrix2) {
+
+    let total_error = 0;
+    for(let i = 0; i < currentUserIndex; i++) {
+        for(let j = 0; j < currentMovieIndex; j++) {
+          
+          
+          let y = the_matrix[i][j];
+                //Only if the user rated this movie..
+                if(y > 0) {
+                    let y1 = math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));        
+                    total_error += Math.sqrt(Math.pow(y1 - y,2));
+                }
         }
     }
+    return total_error;
 }
