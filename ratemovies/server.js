@@ -16,6 +16,7 @@ const server = http.createServer((req, res) => {
             res.write(fs.readFileSync('./ratemovies.html'));
             res.end();
             break;
+
         case '/submit':
             req.on('data', (data) => {
                 data = decodeURI(data);
@@ -34,6 +35,7 @@ const server = http.createServer((req, res) => {
                 res.end();
             });
             break;
+            
         case '/rate':
             res.write(JSON.stringify(find_movies(user_genre, movieList)));
             res.end();
@@ -107,6 +109,7 @@ function compare(user_genre_array, movie_genre_array){
 }
 
 //funktion der laver objekter med movie ratings til bestemt user 
+
 function user_rates_movies(user_id, movies_to_rate){ 
     let user_rating = [];
     let test = require('./test.json'); //test skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
@@ -118,3 +121,4 @@ function user_rates_movies(user_id, movies_to_rate){
     } 
     fs.writeFileSync('./test.json', JSON.stringify(test).replace(/},{/g, "},\n{"));
 }
+
