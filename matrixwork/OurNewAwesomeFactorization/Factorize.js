@@ -139,11 +139,7 @@ var fs = require('fs');
 
 
 let newMatrix = factorize(userMovieMatrix, 13, 100,0.002);
-JSON.stringify(newMatrix, null, 4);
-fs.writeFile("FactorizedMatrix.json", newMatrix, function (err) {
-  if (err) throw err;
-  console.log('Opdateret Matrix');
-});
+
 /*/
 for(let i = 0; i < 20; i++) {
   for(let j = 0; j < 20; j++) {
@@ -180,6 +176,15 @@ function factorize(the_matrix, latent_features, iterations, learning_rate) {
             }
         }
     }
+    fs.writeFile("FactorizedMatrixA.json", JSON.stringify(factor_matrix1, null, 4), function (err) {
+      if (err) throw err;
+      console.log('Opdateret MatrixA');
+    });
+    fs.writeFile("FactorizedMatrixB.json", JSON.stringify(factor_matrix2, null, 4), function (err) {
+      if (err) throw err;
+      console.log('Opdateret MatrixB');
+    });
+    
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2));
     return math.multiply(factor_matrix1,factor_matrix2);
 }
