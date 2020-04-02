@@ -88,7 +88,7 @@ function add_user_rating(user, movie, rating) {
   // Add the rating to the matrix
   userMovieMatrix[userRow][movieColumn] = rating;
 }
-
+// makes sure that every movie has a number for every movie, so if a user hasn't rated a movie, we insert 0 on that place.
 function fill_empty_ratings() {
   for (i = 0; i < currentUserIndex; i++) {
     for (j = 0; j < currentMovieIndex; j++) {
@@ -178,16 +178,16 @@ function factorize(the_matrix, latent_features, iterations, learning_rate) {
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2));
     return math.multiply(factor_matrix1,factor_matrix2);
 }
-
+// Updates the number is our matrices, moving us hopefully moving us closer to our true values from our target matrix
 function update_latent_feature(latent1, latent2, error, learning_rate) {
     return latent1 + 2 * learning_rate * error * latent2;
 }
 
-
+//Provides us with the column needed to multiply 
 function column_vector(matrix, index) {
     return matrix.map(m => m[index]); 
 }
-
+//Generates the two factor matrices filled with random numbers.
 function make_factor_matrix (latent_features, count) {
     let factor_matrix = [];
     for(let i = 0; i < count; i++) {
@@ -201,7 +201,7 @@ function make_factor_matrix (latent_features, count) {
 }
 
 
-
+//Finds the Root Mean Square Error, which tells us how far our matrix is to the target matrix
 function find_rmse (the_matrix, factor_matrix1, factor_matrix2) {
 
     let total_error = 0;
