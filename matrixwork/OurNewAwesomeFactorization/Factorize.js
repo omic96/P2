@@ -187,7 +187,7 @@ function update_latent_feature(latent1, latent2, error, learning_rate) {
 function column_vector(matrix, index) {
     return matrix.map(m => m[index]); 
 }
-//Generates the two factor matrices filled with random numbers.
+//Generates the two factor matrices filled with random numbers to calculate on.
 function make_factor_matrix (latent_features, count) {
     let factor_matrix = [];
     for(let i = 0; i < count; i++) {
