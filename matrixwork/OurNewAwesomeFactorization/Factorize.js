@@ -135,10 +135,15 @@ function main() {
 
 
 main();
+var fs = require('fs');
 
 
-let newMatrix = factorize(userMovieMatrix, 13, 500,0.002);
-
+let newMatrix = factorize(userMovieMatrix, 13, 100,0.002);
+JSON.stringify(newMatrix, null, 4);
+fs.writeFile("FactorizedMatrix.json", newMatrix, function (err) {
+  if (err) throw err;
+  console.log('Opdateret Matrix');
+});
 /*/
 for(let i = 0; i < 20; i++) {
   for(let j = 0; j < 20; j++) {
