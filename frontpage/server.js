@@ -10,10 +10,15 @@ let fetch = require("node-fetch");
 let movieList = require('./data_2.json');
 let movie_list_result = movieList;
 
+//MongoDb
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://127.0.0.1:27017/";
+
+
 app.use('/static', express.static(__dirname + '/static'));// Routing
 app.use(express.static(__dirname + "/public"));
 app.get('/', function (request, response) {
-    response.sendFile(path.join(__dirname, 'public/frontpage.html'));
+    response.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 // Starts the server.
@@ -47,4 +52,57 @@ for(let i = 0; i < movie_list_result.length; i++) {
 io.on('connection', function (socket) {
 
 	socket.emit("send_movie_array", movie_name_array);
+
+	socket.on("register", function(data) {
+        register_user(data.name, data.pass,socket.id);
+	});
+	
+	socket.on("login", function(data) {
+        login_user(data.name,data.pass, socket.id);
+	});
+	
+
 });
+
+
+function login_user(name1, pass1, id) {
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("MovieRecommender");
+        var query = { name: name1, password: pass1};
+        dbo.collection("Users").find(query).toArray(function (err, result) {
+            if (err) throw err;
+            if(result != "") {
+            io.sockets.connected[id].emit('login success');
+            console.log(name1 + " loggede ind!");
+            }else{
+            io.sockets.connected[id].emit('login failed');
+            }
+            db.close();
+        });
+    });
+}
+
+
+function register_user(name1, pass1, id) {
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("MovieRecommender");
+        var myobj = { name: name1, password: pass1};
+
+        let query = {name: name1};
+        dbo.collection("Users").find(query).toArray(function(err,result) {
+            if(result == "") {
+                dbo.collection("Users").insertOne(myobj, function (err, res) {
+                    if (err) throw err;
+                    console.log("oprettede bruger med navn " + name1 + " og kode " + pass1);
+                    db.close();
+                    io.sockets.connected[id].emit('register success');
+                });
+            }else{
+                io.sockets.connected[id].emit('register failed');
+            }
+        })
+       
+    });
+}

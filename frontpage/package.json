@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "fetch": "^1.1.0",
+    "mongodb": "^3.5.5",
     "node-fetch": "^2.6.0",
     "request": "^2.88.2",
     "socket.io": "^2.3.0"
