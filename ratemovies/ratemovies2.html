@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>hej</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <button onclick="f()">Rate a movie</button>
+    <script>
+
+        function f(){
+            fetch("http://127.0.0.1:3000/rate", {method: "GET"}).then(response => response.json()).then(response => rate_movie(response));
+            // beder om data fra den path, så laver den response om til json format (lettere for computeren at læse), så kaldes rate_movie på response
+            // får data fra find_movies i serveren - movies_to_rate array med objekter (titel og id for hver film)
+        }
+
+        function rate_movie(movies_to_rate){
+            let rating = 0; 
+            for (let index = 0; index < movies_to_rate.length; index++) {
+                console.log(movies_to_rate[index].title);
+                //movies_to_rate[index].rating 
+                rating = prompt("Rate "+ movies_to_rate[index].title + " from 1-5");  //tilføjer rating til objekterne 
+
+                //input control 
+                while(isNaN(rating) || rating > 5 || rating < 1){
+                        rating = prompt(rating + " is not between 1-5. Please try to rate "+ movies_to_rate[index].title + " from 1-5");
+                    }
+                
+                    movies_to_rate[index].rating = rating;
+            }
+            fetch("http://127.0.0.1:3000/rate2", {method: "POST", body: JSON.stringify(movies_to_rate)});
+        }
+    </script>
+</body>
+</html>
