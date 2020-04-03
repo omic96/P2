@@ -144,7 +144,6 @@ var fs = require('fs');
 let newMatrix = factorize(userMovieMatrix, 30, 1,0.002,true);
 
 
-//print den første brugers top 10 ud:
 for(let i = 0; i < 1; i++) {
   for(let j = 0; j < newMatrix[i].length; j++) {
     console.log(newMatrix[i][j], userMovieMatrix[i][j],movieList[movieColumns[j]].title);
@@ -202,6 +201,7 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2));
     return math.multiply(factor_matrix1,factor_matrix2);
 }
+
 // Updates the number is our matrices, moving us hopefully moving us closer to our true values from our target matrix
 function update_latent_feature(latent1, latent2, error, learning_rate) {
     return latent1 + 2 * learning_rate * error * latent2;
@@ -220,7 +220,6 @@ function make_factor_matrix (latent_features, count) {
             factor_matrix[i].push(Math.round(Math.random() * 10) / 10);
         }
     }
-
     return factor_matrix;
 }
 
