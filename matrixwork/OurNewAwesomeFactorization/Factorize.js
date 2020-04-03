@@ -2,6 +2,9 @@ var ratingData = require('./ratings_data.json');
 var movieData = require('./data_2.json');
 var math = require('mathjs');
 
+var saved_factor_matrix1 = require('./30latent62kiterA.json');
+var saved_factor_matrix2 =  require('./30latent62kiterB.json');
+
 // To know what column or row a specific movie or user belongs to
 // KEY: User or Movie ID's 
 var users = {};
@@ -138,20 +141,29 @@ main();
 var fs = require('fs');
 
 
-let newMatrix = factorize(userMovieMatrix, 13, 100,0.002);
+let newMatrix = factorize(userMovieMatrix, 30, 1,0.002,true);
 
-/*/
-for(let i = 0; i < 20; i++) {
-  for(let j = 0; j < 20; j++) {
-    console.log(newMatrix[i][j], userMovieMatrix[i][j]);
+
+//print den første brugers top 10 ud:
+for(let i = 0; i < 1; i++) {
+  for(let j = 0; j < newMatrix[i].length; j++) {
+    console.log(newMatrix[i][j], userMovieMatrix[i][j],movieList[movieColumns[j]].title);
   }
 }
-/*/
-function factorize(the_matrix, latent_features, iterations, learning_rate) {
+
+function factorize(the_matrix, latent_features, iterations, learning_rate, use_saved) {
 
     //Make the two factor matrices, 1 & 2, with random numbers.
-    factor_matrix1 = make_factor_matrix(latent_features,currentUserIndex);
-    factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
+
+    if(use_saved) {
+        factor_matrix1 = saved_factor_matrix1;
+        factor_matrix2 = saved_factor_matrix2;
+        console.log("Starting matrix factorization, with saved matrixes.");
+    }else{
+        factor_matrix1 = make_factor_matrix(latent_features,currentUserIndex);
+        factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
+        console.log("Starting matrix factorization, with new matrixes.")
+    }
 
     for(let n = 0; n < iterations; n++) {
         for(let i = 0; i < currentUserIndex; i++) {
@@ -175,6 +187,8 @@ function factorize(the_matrix, latent_features, iterations, learning_rate) {
                 }
             }
         }
+
+        console.log(n); 
     }
     fs.writeFile("FactorizedMatrixA.json", JSON.stringify(factor_matrix1, null, 4), function (err) {
       if (err) throw err;
