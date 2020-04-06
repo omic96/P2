@@ -20,8 +20,13 @@
         <script>
             let socket = io();
 
-            socket.on('login success', function() {
-                location.href = "frontpage.html";
+            socket.on('login success', function(first_time_logged_in, user_id) {
+                document.cookie = "id=" + user_id + "; expires=Thu, 18 Dec 2030 12:00:00 UTC path=/";
+                if(first_time_logged_in == false)  {
+                    location.href = "frontpage.html";
+                }else{
+                    location.href = "ratemovies.html";
+                }
             });
 
             socket.on('login failed', function(){
