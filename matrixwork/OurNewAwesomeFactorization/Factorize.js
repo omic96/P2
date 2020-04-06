@@ -141,7 +141,7 @@ function main() {
 
 main();
 
-//let newMatrix = factorize(userMovieMatrix, 30, 1,0.002,true);
+let newMatrix = factorize(userMovieMatrix, 30, 1000,0.002,true);
 
 
 /*for(let i = 0; i < 1; i++) {
@@ -150,10 +150,8 @@ main();
     }
 }
 */
-let p = new Parallel(userMovieMatrix);
-p.spawn(
-    
-function factorize(the_matrix, latent_features=30, iterations=1000, learning_rate=0.002, use_saved=false) {
+//let p = new Parallel(userMovieMatrix); Test for parallel
+function factorize(the_matrix, latent_features, iterations, learning_rate, use_saved) {
     
     //Make the two factor matrices, 1 & 2, with random numbers.
     
@@ -204,7 +202,6 @@ function factorize(the_matrix, latent_features=30, iterations=1000, learning_rat
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2));
     return math.multiply(factor_matrix1,factor_matrix2);
 }
-);
 
 // Updates the number is our matrices, moving us hopefully moving us closer to our true values from our target matrix
 function update_latent_feature(latent1, latent2, error, learning_rate) {
@@ -240,7 +237,7 @@ function find_rmse (the_matrix, factor_matrix1, factor_matrix2) {
             //Only if the user rated this movie..
             if(y > 0) {
                 let y1 = math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));        
-                total_error += Math.sqrt(Math.pow(y1 - y,2));
+                total_error += Math.sqrt((Math.pow(y1 - y,2)));
             }
         }
     }
