@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <title>hej</title>
+    <meta charset="UTF-8">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <!-- asks the user to select genres -->
+
+    <h1>hej vælg nogle genre</h1>
+
+        <input type="checkbox" id="horror" name="genre" value="Horror">
+        <label for="genre1"> Gyser</label><br>
+        <input type="checkbox" id="action" name="genre" value="Action">
+        <label for="genre2"> Action</label><br>
+        <input type="checkbox" id="comedy" name="genre" value="Comedy">
+        <label for="genre3"> Komedie</label><br>
+        <input type="checkbox" id="romance" name="genre" value="Romance">
+        <label for="genre4"> Romantik</label><br><br>
+        
+        <input type="button" value="Submit" onclick="submit()">
+    
+    <script>
+        let socket = io();
+
+        function submit() {
+            
+            let checkbox = document.getElementsByName("genre");
+            let array_of_genres = [];
+
+            for(let i = 0; i < checkbox.length; i++) {
+                if(checkbox[i].checked) {
+                    array_of_genres.push(checkbox[i].value);
+                }
+            }
+
+            socket.emit("send liked genres", array_of_genres);
+            location.href="ratemovies2.html";
+        }
+    </script>
+</body>
+</html>
