@@ -9,6 +9,10 @@ var moiveRatings = require('./ratings_data.json');
 
 var user_genre; 
 
+//til database
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://127.0.0.1:27017/";
+
 const server = http.createServer((req, res) => {
     switch (req.url) {
         case '/':
@@ -47,7 +51,7 @@ const server = http.createServer((req, res) => {
                 data = decodeURI(data);
                 data = JSON.parse(data);
                 //console.log(data);
-                user_rates_movies(3, data); 
+                user_rates_movies(read_cookie("id"), data); 
             });
             break; 
 
@@ -122,3 +126,8 @@ function user_rates_movies(user_id, movies_to_rate){
     fs.writeFileSync('./test.json', JSON.stringify(test).replace(/},{/g, "},\n{"));
 }
 
+function read_cookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+  }
