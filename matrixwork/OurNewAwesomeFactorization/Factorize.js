@@ -191,11 +191,11 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
     }
     fs.writeFile("FactorizedMatrixA.json", JSON.stringify(factor_matrix1, null, 4), function (err) {
       if (err) throw err;
-      console.log('Opdateret MatrixA');
+      console.log('MatrixA updated');
     });
     fs.writeFile("FactorizedMatrixB.json", JSON.stringify(factor_matrix2, null, 4), function (err) {
       if (err) throw err;
-      console.log('Opdateret MatrixB');
+      console.log('MatrixB updated');
     });
     
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2));
