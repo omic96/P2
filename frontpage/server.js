@@ -74,7 +74,9 @@ io.on('connection', function (socket) {
     socket.on("send rated movies", function(rated_movies, user_id) {
         console.log(user_id,rated_movies);
         user_rates_movies(user_id,rated_movies);
+        update_users_liked_genres(user_id, user_genre);
         update_user_logged_in(user_id);
+
     });
 
 });
@@ -152,7 +154,7 @@ function register_user(name1, pass1, id) {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         var dbo = db.db("MovieRecommender");
-        var myobj = { name: name1, password: pass1, first_time_logged_in: true};
+        var myobj = { name: name1, password: pass1, first_time_logged_in: true, liked_genres: [] };
 
         let query = {name: name1};
         dbo.collection("Users").find(query).toArray(function(err,result) {
@@ -179,6 +181,20 @@ function update_user_logged_in(id) {
             {_id: ObjectID(id) },
             {
                 $set: {first_time_logged_in: false}
+            }
+        )
+    });
+}
+
+function update_users_liked_genres(id, user_genre){
+    MongoClient.connect(url, function (err, db) {
+        if(err) throw err;
+        var dbo = db.db("MovieRecommender");
+
+        dbo.collection("Users").updateOne(
+            {_id: ObjectID(id) },
+            {
+                $set: {liked_genres: user_genre}
             }
         )
     });
