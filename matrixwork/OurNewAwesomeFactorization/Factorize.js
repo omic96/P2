@@ -141,9 +141,9 @@ main();
 
 function get_user_ratings_array (user_id) {
  let currentUserRow = users[user_id];
- let user_array = [];
+ let user_array = [[]];
  for(let i = 0; i < currentMovieIndex; i++) {
-    user_array.push(userMovieMatrix[currentUserRow][i]);
+    user_array[0].push(userMovieMatrix[currentUserRow][i]);
  }
 
  return user_array;
@@ -153,12 +153,16 @@ function get_user_ratings_array (user_id) {
 
 //console.log(get_user_ratings_array(1));
 
-console.log(get_user_ratings_array(1));
+console.log(users["5e8c3f50888b233290d1c9c1"]);
 
-let hej = factorize(get_user_ratings_array(1), 30, 20, 0.002, false, 1);
+let hej = factorize(get_user_ratings_array("5e8c3f50888b233290d1c9c1"), 30, 200, 0.002, false, 1);
+
+let lol = get_user_ratings_array(1);
+console.log(movies[2475]);
+
 
 for(let i = 0; i < 20; i++) {
-  console.log(hej[0][i],userMovieMatrix[0][i]);
+  console.log(hej[0][4674],userMovieMatrix[300][4674]);
 }
 
 //Factorize the total matrix
