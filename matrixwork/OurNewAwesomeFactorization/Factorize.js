@@ -2,7 +2,6 @@ var ratingData = require('./ratings_data.json');
 var movieData = require('./data_2.json');
 var math = require('mathjs');
 var fs = require('fs');
-var Parallel = require('paralleljs')
 
 var saved_factor_matrix1 = require('./30latent62kiterA.json');
 var saved_factor_matrix2 =  require('./30latent62kiterB.json');
@@ -134,39 +133,43 @@ function main() {
       title: movieTitle,
       genres: movieGenres
     };
-}
-//get_user_ratings(1);
+  }
 }
 
 
 main();
 
-let newMatrix = factorize(userMovieMatrix, 30, 1000,0.002,true);
+
+get_user_ratings("5e8c3f50888b233290d1c9c1");
+
+//Factorize the total matrix
+//let factorized_matrix = factorize(userMovieMatrix, 30, 200,0.002,false, 1);
 
 
-/*for(let i = 0; i < 1; i++) {
-    for(let j = 0; j < newMatrix[i].length; j++) {
-        console.log(newMatrix[i][j], userMovieMatrix[i][j],movieList[movieColumns[j]].title);
-    }
+/*/
+for(let i = 0; i < 30; i++) {
+  console.log(factorized_matrix[0][i],userMovieMatrix[0][i]);
 }
-*/
-//let p = new Parallel(userMovieMatrix); Test for parallel
-function factorize(the_matrix, latent_features, iterations, learning_rate, use_saved) {
-    
+/*/
+
+
+
+function factorize(the_matrix, latent_features, iterations, learning_rate, use_saved, user_count) {  
     //Make the two factor matrices, 1 & 2, with random numbers.
-    
+    let factor_matrix1;
+    let factor_matrix2;
     if(use_saved) {
-        var factor_matrix1 = saved_factor_matrix1;
-        var factor_matrix2 = saved_factor_matrix2;
-            console.log("Starting matrix factorization, with saved matrixes.");
-        }else{
-        var factor_matrix1 = make_factor_matrix(latent_features,currentUserIndex);
-        var factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
+        factor_matrix1 = saved_factor_matrix1;
+        factor_matrix2 = saved_factor_matrix2;
+        console.log("Starting matrix factorization, with saved matrixes.");
+    }else{
+        factor_matrix1 = make_factor_matrix(latent_features,user_count);
+        factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
         console.log("Starting matrix factorization, with new matrixes.")
     }
     
     for(let n = 0; n < iterations; n++) {
-        for(let i = 0; i < currentUserIndex; i++) {
+        for(let i = 0; i < user_count; i++) {
             for(let j = 0; j < currentMovieIndex; j++) {
                 
                 //find current value of original matrix
@@ -186,9 +189,7 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
                     }
                 }
             }
-        }
-        
-        console.log(n); 
+        }        
     }
     fs.writeFile("FactorizedMatrixA.json", JSON.stringify(factor_matrix1, null, 4), function (err) {
         if (err) throw err;
@@ -199,7 +200,7 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
         console.log('Matrix B updated');
     });
     
-    console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2));
+    console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2, user_count));
     return math.multiply(factor_matrix1,factor_matrix2);
 }
 
@@ -226,10 +227,10 @@ function make_factor_matrix (latent_features, count) {
 
 
 //Finds the Root Mean Square Error, which tells us how far our matrix is to the target matrix
-function find_rmse (the_matrix, factor_matrix1, factor_matrix2) {
+function find_rmse (the_matrix, factor_matrix1, factor_matrix2, user_count) {
     
     let total_error = 0;
-    for(let i = 0; i < currentUserIndex; i++) {
+    for(let i = 0; i < user_count; i++) {
         for(let j = 0; j < currentMovieIndex; j++) {
             
             
