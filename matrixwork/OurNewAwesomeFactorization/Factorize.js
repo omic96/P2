@@ -139,18 +139,35 @@ function main() {
 
 main();
 
+function get_user_ratings_array (user_id) {
+ let currentUserRow = users[user_id];
+ let user_array = [];
+ for(let i = 0; i < currentMovieIndex; i++) {
+    user_array.push(userMovieMatrix[currentUserRow][i]);
+ }
 
-get_user_ratings("5e8c3f50888b233290d1c9c1");
+ return user_array;
+}
+
+//get_user_ratings("5e8c3f50888b233290d1c9c1");
+
+//console.log(get_user_ratings_array(1));
+
+console.log(get_user_ratings_array(1));
+
+let hej = factorize(get_user_ratings_array(1), 30, 20, 0.002, false, 1);
+
+for(let i = 0; i < 20; i++) {
+  console.log(hej[0][i],userMovieMatrix[0][i]);
+}
 
 //Factorize the total matrix
 //let factorized_matrix = factorize(userMovieMatrix, 30, 200,0.002,false, 1);
 
 
-/*/
-for(let i = 0; i < 30; i++) {
-  console.log(factorized_matrix[0][i],userMovieMatrix[0][i]);
-}
-/*/
+//console.log(hej);
+
+
 
 
 
