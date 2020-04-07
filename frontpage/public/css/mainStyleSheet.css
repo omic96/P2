@@ -64,7 +64,7 @@
 
 .rating { 
   position: absolute;
-  top: 50%;
+  top: 75%;
   left: 50%;
   transform: translate(-50%,-50%) rotateY(180deg); 
   display: flex;
@@ -77,7 +77,9 @@
 .rating label{
   display: block;
   cursor: pointer;
-  width: 50px;  
+  width: 1.8vw;
+  font-size: 10vw;
+  font-size: 10vh;  
 }
 
 .rating label:before{
@@ -85,8 +87,11 @@
   font-family: FontAwesome;
   position: relative;
   display: block;
-  font-size: 50px;
-  color: #101010;
+  font-size: 150%;
+  font-size: 3vw;
+  font-size: 3vh;
+  color: #ffffff;
+  opacity: 0.15;
 }
 
 .rating label:after{
@@ -94,7 +99,9 @@
   font-family: FontAwesome;
   position: absolute;
   display: block;
-  font-size: 50px;
+  font-size: 150%;
+  font-size: 3vw;
+  font-size: 3vh;
   color: #d8cb13;
   top: 0;
   opacity: 0;
