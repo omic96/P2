@@ -7,6 +7,8 @@ let server = http.Server(app);
 let io = socketIO(server); app.set('port', 30);
 let fetch = require("node-fetch");
 
+let factorizeJS = require('./factorize.js');
+
 let movieList = require('./data_2.json');
 let movie_list_result = movieList;
 
@@ -27,6 +29,11 @@ app.get('/', function (request, response) {
 server.listen(30, function () {
     console.log('Starting server on port 30');
 });
+
+
+//console.log(factorizeJS.userMovieMatrix[0][0]);
+factorizeJS.main();
+
 
 let request = require("request")
 let user_genre; 
@@ -79,6 +86,10 @@ io.on('connection', function (socket) {
 
     });
 
+    socket.on("get ratings", function(user_id) {
+        io.sockets.connected[socket.id].emit('send ratings', factorizeJS.get_user_ratings_server(user_id));
+    })
+
 });
 
 
@@ -118,17 +129,37 @@ function compare(user_genre_array, movie_genre_array){
     return finalarray; 
 }
 
+
 //funktion der laver objekter med movie ratings til bestemt user 
 function user_rates_movies(user_id, movies_to_rate){ 
+    /*/
     let user_rating = [];
-    let test = require('./test.json'); //test skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
+    let test = require('./ratings_data.json'); //test skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
 
     for (let i = 0; i < movies_to_rate.length; i++) {
        user_rating[i] = {userId: user_id, movieId : movies_to_rate[i].id, rating : movies_to_rate[i].rating, timestamp : 00}; //nyt objekt
        test.push(user_rating[i]);
         //gem i user ?
     } 
-    fs.writeFileSync('./test.json', JSON.stringify(test).replace(/},{/g, "},\n{"));
+    fs.writeFileSync('./ratings_data.json', JSON.stringify(test).replace(/},{/g, "},\n{"));
+    factorizeJS.update_users();
+    factorizeJS.factorize_new_user(user_id);
+    /*/
+    let user_rating = [];
+    let test = require('./ratings_data.json'); //test skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
+
+    for (let i = 0; i < movies_to_rate.length; i++) {
+       user_rating[i] = {userId: user_id, movieId : movies_to_rate[i].id, rating : movies_to_rate[i].rating, timestamp : "00"}; //nyt objekt
+       test.push(user_rating[i]);
+        //gem i user ?
+    } 
+
+    fs.writeFileSync("./ratings_data.json", JSON.stringify(test, null, 4), function (err) {
+        if (err) throw err;
+        console.log('Matrix A updated');
+    });
+    factorizeJS.update_users();
+    factorizeJS.factorize_new_user(user_id);
 }
 
 function login_user(name1, pass1, id) {
