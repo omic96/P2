@@ -70,18 +70,35 @@
 				let star_ratings = document.createElement("div");
 				
 
-				for(let i = 0; i < 5; i++) {
+				for(let j = 1; j < 6; j++) {
 					let star_input = document.createElement("input");
 					star_input.type = "radio";
 					star_input.name = "star";
-					star_input.id = "star" + i;
-
-					let star_label = document.createElement("label");
+					star_input.id = "star" + j;
+					for(let k = 5; k >= 1; k--) {
+						star_input.value = k - j + 5;
+					}
 					
+					
+					let star_label = document.createElement("label");
+					star_label.onclick = function(){
+						
+						console.log(all_movies[i].title);
+						console.log(star_input.id);
+						console.log(star_input.value);
+						
+					};
+
+
+
 					star_ratings.appendChild(star_input);
 					star_ratings.appendChild(star_label);
+					
+					
+				
 				}
 
+                
 				action_section.appendChild(movie_container);
 				movie_container.appendChild(movie_overlay);
 				movie_container.appendChild(movie_image);
@@ -102,6 +119,10 @@
 				movie_image.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
 	}	
+
+	function test(){
+	console.log("test");
+	}
 
 	</script>
 
