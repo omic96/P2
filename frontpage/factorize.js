@@ -6,6 +6,8 @@ var fs = require('fs');
 var saved_factor_matrix1 = require('./FactorizedMatrixA.json');
 var saved_factor_matrix2 =  require('./FactorizedMatrixB.json');
 
+var factorized_matrix;
+
 // To know what column or row a specific movie or user belongs to
 // KEY: User or Movie ID's 
 var users = {};
@@ -48,8 +50,8 @@ main: function() {
     add_all_ratings();
     // Fill all empty entries
     fill_empty_ratings()
-
-    factorize(userMovieMatrix,30,1,0.002,true,currentUserIndex, false);
+    factorized_matrix = factorize(userMovieMatrix,30,1,0.002,true,currentUserIndex, false);
+    
   },
 update_users: function() {
     ratingData = require('./ratings_data.json');
@@ -58,13 +60,11 @@ update_users: function() {
 },
 
 factorize_new_user: function(the_user_id) {
-    let row = users[the_user_id];
-    factorize(get_user_ratings_array(row),30,500,0.002,false,1,true);
+    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),30,500,0.002,false,1,true);
+    factorized_matrix.push(new_user_matrix[0]);
 },
 get_user_ratings_server: function(the_user_id) {
-    let row = users[the_user_id];
-    return get_user_ratings_array(row);
-    
+    return get_user_ratings_array_factorized(the_user_id);
 }
 
 };
@@ -139,11 +139,11 @@ function get_user_ratings(userId) {
   let currentUserRow = users[userId]
   for (i = 0; i < currentMovieIndex; i++) {
     // Only print something if the user has given a rating to this movie
-    if (userMovieMatrix[currentUserRow][i]) {
-      
+     if (userMovieMatrix[currentUserRow][i]) {
+        
       user_database = new user_ratings(userId, movieList[movieColumns[i]].title, userMovieMatrix[currentUserRow][i])
-      
-      console.log(user_database);
+        
+       console.log(user_database);
     }
   }
 }
@@ -152,6 +152,7 @@ function get_user_ratings(userId) {
 
 //Returns an array with a specfic users rating. Takes the users id as parameter.
 function get_user_ratings_array (user_id) {
+  console.log(user_id,users[user_id]);
  let currentUserRow = users[user_id]; //Using the directory to find the row connect to the specific user
  let user_array = [[]];
  for(let i = 0; i < currentMovieIndex; i++) {
@@ -161,6 +162,15 @@ function get_user_ratings_array (user_id) {
  return user_array;
 }
 
+function get_user_ratings_array_factorized (user_id) {
+  let currentUserRow = users[user_id];
+  let user_array = [[]];
+  for(let i =0; i < currentMovieIndex; i++) {
+    user_array[0].push(factorized_matrix[currentUserRow][i]);
+  }
+
+  return user_array;
+}
 
 //Factorize a given matrix. It is possible to change the amount of latent features, iterations, learning rate and how many users to look at.
 //the use_saved parameter determine whetever the function should use saved factor matrixes, or use new random ones.
@@ -202,7 +212,8 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
                     }
                 }
             }
-        }        
+        }
+        console.log(n);
     }
 
     //Save the two factor matrix, A & B, so that we don't have to do this process again. Each file will be overwritten when a new file is saved.
