@@ -10,7 +10,7 @@
 
 <body style="margin: 0;">
 	<div id="background" class="background">
-		<h2 class="genres_text">Gyser film </h2>
+	 	<h2 class="genres_text">Gyser film </h2>
 		<div class="movie_section" id="movie_horror">
 
 		</div>
@@ -33,6 +33,7 @@
 	<script>
 		let socket = io();
 
+		//Loads array of all movies when the server is on, 
 		let all_movies = [];
 		socket.on("send_movie_array", function(data) {
 			all_movies = data;
@@ -42,6 +43,7 @@
 			console.log(ratings);
 		});
 
+		//puts movies with the correct genre under der correct header, uses data array function to find specific genre
 		setTimeout(function(){ 
 			for(let i = 0; i < all_movies.length; i++) {
 			if(all_movies[i].genres.includes("Action")) {
@@ -64,59 +66,66 @@
 
 	 }, 1000);
 
-	function create_elements(main_element, i) {
-		let action_section = document.getElementById(main_element);
+	 //function that creates our movie thumbnail and adds a overlay on mouse hover that shoves movie name and star rating feature.
 
+	function create_elements(main_element, i) {
+				let action_section = document.getElementById(main_element);
+				
 				let movie_container = document.createElement("div");
 				let movie_image = document.createElement("img");
 				let movie_overlay = document.createElement("div");
 				let movie_title_text = document.createElement("div");
+				let movie_MovieId = document.createElement("div");
 				let star_ratings = document.createElement("div");
-				
 
+				//loop that creates clickable rating-stars under each movie overlay (used in conjunction with star_label)
 				for(let j = 1; j < 6; j++) {
 					let star_input = document.createElement("input");
 					star_input.type = "radio";
 					star_input.name = "star";
 					star_input.id = "star" + j;
+					
+					//loop that gives correct rating value for each star 
 					for(let k = 5; k >= 1; k--) {
 						star_input.value = k - j + 5;
+						//all_movies[i].rating = star_input.value;
 					}
-					
-					
+
+					//registers the users vote based on the amount of stars given and saves them in rating document file.
 					let star_label = document.createElement("label");
 					star_label.onclick = function(){
-						
 						console.log(all_movies[i].title);
-						console.log(star_input.id);
+						console.log(all_movies[i].movieId);
 						console.log(star_input.value);
-						
+						//console.log(all_movies[i].rating);
+						socket.emit("et eller andet", all_movies[i], read_cookie("id"), star_input.value);
 					};
-
-
 
 					star_ratings.appendChild(star_input);
 					star_ratings.appendChild(star_label);
-					
-					
-				
 				}
 
-                
+				//
 				action_section.appendChild(movie_container);
 				movie_container.appendChild(movie_overlay);
 				movie_container.appendChild(movie_image);
 				movie_overlay.appendChild(movie_title_text);
 				movie_overlay.appendChild(star_ratings);
+				movie_overlay.appendChild(movie_MovieId);
 
+				//assigns names under each class.
 				movie_container.className = "movie_container";
 				movie_overlay.className = "movie_overlay";
 				movie_title_text.className = "movie_title_text";
 				movie_image.className = "movie_images";
+				movie_MovieId.className = "id";
 				star_ratings.className = "rating";
+				
 
 				movie_title_text.innerHTML = all_movies[i].title;
+				movie_MovieId.innerHTML = all_movies[i].movieId;
 
+				//ensures that if a movie has no thumbnail is given a placeholder 
 				if(all_movies[i].poster_img != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
 				movie_image.src = all_movies[i].poster_img;
 				}else{
