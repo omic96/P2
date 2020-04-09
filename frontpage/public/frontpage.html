@@ -38,6 +38,10 @@
 			all_movies = data;
 		});
 
+		socket.on("send ratings", function(ratings) {
+			console.log(ratings);
+		});
+
 		setTimeout(function(){ 
 			for(let i = 0; i < all_movies.length; i++) {
 			if(all_movies[i].genres.includes("Action")) {
@@ -120,9 +124,16 @@
 				}
 	}	
 
-	function test(){
-	console.log("test");
+	function get_my_ratings() {
+		socket.emit("get ratings", read_cookie("id"));
 	}
+
+
+	function read_cookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
+        }
 
 	</script>
 

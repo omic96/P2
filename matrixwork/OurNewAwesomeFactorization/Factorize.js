@@ -39,6 +39,26 @@ class user_ratings {
   }
 }
 
+function main() {
+  // Add all entries
+  add_all_ratings();
+  // Fill all empty entries
+  fill_empty_ratings()
+  // Load movie data
+  for (let entry in movieData) {
+    let movieID = movieData[entry].movieId;
+    let movieTitle = movieData[entry].title;
+    let movieGenres = movieData[entry].genres;
+
+    movieList[movieID] = {
+      title: movieTitle,
+      genres: movieGenres
+    };
+  }
+}
+
+main();
+
 // Loads and sends all ratings to be added
 function add_all_ratings() {
   for (let entry in ratingData) {
@@ -118,63 +138,28 @@ function get_user_ratings(userId) {
 }
 
 
-function main() {
-  // Add all entries
-  add_all_ratings();
-  // Fill all empty entries
-  fill_empty_ratings()
-  // Load movie data
-  for (let entry in movieData) {
-    let movieID = movieData[entry].movieId;
-    let movieTitle = movieData[entry].title;
-    let movieGenres = movieData[entry].genres;
 
-    movieList[movieID] = {
-      title: movieTitle,
-      genres: movieGenres
-    };
-  }
-}
-
-
-main();
-
+//Returns an array with a specfic users rating. Takes the users id as parameter.
 function get_user_ratings_array (user_id) {
- let currentUserRow = users[user_id];
- let user_array = [];
+ let currentUserRow = users[user_id]; //Using the directory to find the row connect to the specific user
+ let user_array = [[]];
  for(let i = 0; i < currentMovieIndex; i++) {
-    user_array.push(userMovieMatrix[currentUserRow][i]);
+    user_array[0].push(userMovieMatrix[currentUserRow][i]);
  }
 
  return user_array;
 }
 
-//get_user_ratings("5e8c3f50888b233290d1c9c1");
 
-//console.log(get_user_ratings_array(1));
-
-console.log(get_user_ratings_array(1));
-
-let hej = factorize(get_user_ratings_array(1), 30, 20, 0.002, false, 1);
-
-for(let i = 0; i < 20; i++) {
-  console.log(hej[0][i],userMovieMatrix[0][i]);
-}
-
-//Factorize the total matrix
-//let factorized_matrix = factorize(userMovieMatrix, 30, 200,0.002,false, 1);
-
-
-//console.log(hej);
-
-
-
-
-
+//Factorize a given matrix. It is possible to change the amount of latent features, iterations, learning rate and how many users to look at.
+//the use_saved parameter determine whetever the function should use saved factor matrixes, or use new random ones.
+//After this function is finished, it safes the two factor matrixes in two documents;  FactorizedMatrixA.json & FactorizedMatrixB.json
 function factorize(the_matrix, latent_features, iterations, learning_rate, use_saved, user_count) {  
     //Make the two factor matrices, 1 & 2, with random numbers.
     let factor_matrix1;
     let factor_matrix2;
+
+    //Here we check if we check if we should use old or new random matrixes.
     if(use_saved) {
         factor_matrix1 = saved_factor_matrix1;
         factor_matrix2 = saved_factor_matrix2;
@@ -196,7 +181,7 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
                     let error = current_value - math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));
                     
                     
-                    //Lets change the numbers in each factor matrix...
+                    //Update each element in the two factor matrix, by using the update_latent_feature function.
                     for(let k = 0; k < latent_features; k++) {
                         let factor_matrix1_latent_feature = factor_matrix1[i][k];
                         let factor_matrix2_latent_feature = factor_matrix2[k][j];
@@ -208,6 +193,8 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
             }
         }        
     }
+
+    //Save the two factor matrix, A & B, so that we don't have to do this process again. Each file will be overwritten when a new file is saved.
     fs.writeFile("FactorizedMatrixA.json", JSON.stringify(factor_matrix1, null, 4), function (err) {
         if (err) throw err;
         console.log('Matrix A updated');
@@ -217,12 +204,17 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
         console.log('Matrix B updated');
     });
     
+
+    //print out the final total error
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2, user_count));
+    
+    //Return the new matrix, A * B.
     return math.multiply(factor_matrix1,factor_matrix2);
 }
 
 // Updates the number is our matrices, moving us hopefully moving us closer to our true values from our target matrix
 function update_latent_feature(latent1, latent2, error, learning_rate) {
+  //The formula from latex, in the matrix factorization section
     return latent1 + 2 * learning_rate * error * latent2;
 }
 
@@ -230,15 +222,17 @@ function update_latent_feature(latent1, latent2, error, learning_rate) {
 function column_vector(matrix, index) {
     return matrix.map(m => m[index]); 
 }
+
 //Generates the two factor matrices filled with random numbers to calculate on.
 function make_factor_matrix (latent_features, count) {
     let factor_matrix = [];
     for(let i = 0; i < count; i++) {
         factor_matrix.push([]);
         for(let j = 0; j < latent_features; j++) {
+          //Make sure there is only a few decimals in the random numbers.
             factor_matrix[i].push(Math.round(Math.random() * 10) / 10);
-        }
-    }
+        }    
+      }
     return factor_matrix;
 }
 
