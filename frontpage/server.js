@@ -35,15 +35,15 @@ server.listen(30, function () {
 factorizeJS.main();
 
 
-let request = require("request")
+let request = require("request");
 let user_genre; 
 
 let movie_name_array = [];
 for(let i = 0; i < movie_list_result.length; i++) {
 	if(i < 200) {
 		let array1 = movie_list_result[i].title.split(/[()]+/).filter(function(e) { return e; });
-		let array2 = array1[0].split(/[,]+/).filter(function(e) { return e; });
-		array2.push(array1[1]);
+        let array2 = array1[0].split(/[,]+/).filter(function(e) { return e; });
+        array2.push(array1[1]);
 		let url = "http://api.themoviedb.org/3/search/movie?query=" + array2[0] + "&primary_release_year=" + array2[array2.length] + "&api_key=57d96d1905c6461a590da9ca31df2506";
 		
 		fetch(url)
@@ -66,7 +66,7 @@ io.on('connection', function (socket) {
         register_user(data.name, data.pass,socket.id);
 	});
 	
-	socket.on("login", function(data) {
+	socket.on("login", function(data) {i
         login_user(data.name,data.pass, socket.id);
     });
     
@@ -83,15 +83,19 @@ io.on('connection', function (socket) {
         user_rates_movies(user_id,rated_movies);
         update_users_liked_genres(user_id, user_genre);
         update_user_logged_in(user_id);
-
     });
 
     socket.on("get ratings", function(user_id) {
         io.sockets.connected[socket.id].emit('send ratings', factorizeJS.get_user_ratings_server(user_id));
-    })
+    });
+
+    socket.on("et eller andet", function(movies_to_rate, user_id, star_rating) {
+        movies_to_rate.rating = star_rating;
+        user_rates_movies(user_id, movies_to_rate);
+    )};
+    
 
 });
-
 
 function find_movies(user_genre, movieList){
     let same_genre_movies = []; 
@@ -211,7 +215,7 @@ function update_user_logged_in(id) {
         dbo.collection("Users").updateOne(
             {_id: ObjectID(id) },
             {
-                $set: {first_time_logged_in: false}
+                $set: {first_time_logged_in: false} 
             }
         )
     });
