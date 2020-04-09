@@ -92,7 +92,7 @@ io.on('connection', function (socket) {
     socket.on("et eller andet", function(movies_to_rate, user_id, star_rating) {
         movies_to_rate.rating = star_rating;
         user_rates_movies(user_id, movies_to_rate);
-    )};
+    });
     
 
 });

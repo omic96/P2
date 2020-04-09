@@ -50,7 +50,7 @@ main: function() {
     add_all_ratings();
     // Fill all empty entries
     fill_empty_ratings()
-    factorized_matrix = factorize(userMovieMatrix,30,1,0.002,true,currentUserIndex, false);
+    factorized_matrix = factorize(userMovieMatrix,30,60000,0.002,true,currentUserIndex, false);
     
   },
 update_users: function() {
