@@ -2,7 +2,6 @@ var ratingData = require('./ratings_data.json');
 var movieData = require('./data_2.json');
 var math = require('mathjs');
 var fs = require('fs');
-var crossValidation = require('ml-cross-validation');
 var saved_factor_matrix1 = require('./FactorizedMatrixA.json');
 var saved_factor_matrix2 =  require('./FactorizedMatrixB.json');
 
@@ -53,7 +52,7 @@ main: function() {
     factorized_matrix = factorize(userMovieMatrix,60,1,0.002,true,currentUserIndex, false);
 
 
-  for(let i = 0; i < 20; i++) {
+  for(let i = 0; i < 1000; i++) {
     console.log(factorized_matrix[0][i], userMovieMatrix[0][i]);
   }
 
