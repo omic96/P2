@@ -52,7 +52,7 @@ main: function() {
     factorized_matrix = factorize(userMovieMatrix,60,1,0.002,true,currentUserIndex, false);
 
 
-  for(let i = 0; i < 1000; i++) {
+  for(let i = 0; i < 20; i++) {
     console.log(factorized_matrix[0][i], userMovieMatrix[0][i]);
   }
 
