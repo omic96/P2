@@ -65,7 +65,7 @@ update_users: function() {
 },
 
 factorize_new_user: function(the_user_id) {
-    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),30,500,0.002,false,1,true);
+    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,false,1,true);
     factorized_matrix.push(new_user_matrix[0]);
 },
 get_user_ratings_server: function(the_user_id) {
