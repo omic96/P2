@@ -92,6 +92,7 @@ io.on('connection', function (socket) {
     socket.on("et eller andet", function(movies_to_rate, user_id, star_rating) {
         movies_to_rate.rating = star_rating;
         user_rates_movies(user_id, movies_to_rate);
+        console.log("hej")
     });
     
 
@@ -156,11 +157,19 @@ function user_rates_movies(user_id, movies_to_rate){
        user_rating[i] = {userId: user_id, movieId : movies_to_rate[i].id, rating : movies_to_rate[i].rating, timestamp : "00"}; //nyt objekt
        test.push(user_rating[i]);
         //gem i user ?
+        console.log("jeg er her");
     } 
 
-    fs.writeFileSync("./ratings_data.json", JSON.stringify(test, null, 4), function (err) {
+    if(movies_to_rate.length === undefined){
+        console.log(movies_to_rate.id);
+        user_rating = {userId: user_id, movieId : movies_to_rate.movieId, rating : movies_to_rate.rating, timestamp : "00"}; //nyt objekt
+        test.push(user_rating);
+    }
+
+    console.log(movies_to_rate.length);
+    fs.writeFile("./ratings_data.json", JSON.stringify(test, null, 4), function (err) {
         if (err) throw err;
-        console.log('Matrix A updated');
+        console.log('Matrix A updated' + err);
     });
     factorizeJS.update_users();
     factorizeJS.factorize_new_user(user_id);

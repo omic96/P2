@@ -233,7 +233,7 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
     });
     }else{
         saved_factor_matrix1.push(factor_matrix1[0]);
-        fs.writeFileSync("FactorizedMatrixA.json", JSON.stringify(saved_factor_matrix1, null, 4), function (err) {
+        fs.writeFile("FactorizedMatrixA.json", JSON.stringify(saved_factor_matrix1, null, 4), function (err) {
             if (err) throw err;
             console.log('Matrix A updated');
         });
