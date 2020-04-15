@@ -6,18 +6,16 @@ let app = express();
 let server = http.Server(app);
 let io = socketIO(server); app.set('port', 30);
 let fetch = require("node-fetch");
-
-let factorizeJS = require('./factorize.js');
+let fs = require("fs");
 
 let movieList = require('./data_2.json');
 let movie_list_result = movieList;
 
-const fs = require("fs");
+let factorizeJS = require('./factorize.js');
 
 //MongoDb
 const { MongoClient, ObjectID } = require('mongodb');
-var url = "mongodb://127.0.0.1:27017/";
-
+let url = "mongodb://127.0.0.1:27017/";
 
 app.use('/static', express.static(__dirname + '/static'));// Routing
 app.use(express.static(__dirname + "/public"));
@@ -30,14 +28,13 @@ server.listen(30, function () {
     console.log('Starting server on port 30');
 });
 
-
-//console.log(factorizeJS.userMovieMatrix[0][0]);
+//Updates and factorizes the UserMovieMatrix upon server start
 factorizeJS.main();
-
 
 let request = require("request");
 let user_genre; 
 
+//Display thumbnails
 let movie_name_array = [];
 for(let i = 0; i < movie_list_result.length; i++) {
 	if(i < 200) {
@@ -56,7 +53,6 @@ for(let i = 0; i < movie_list_result.length; i++) {
 		movie_name_array.push(movie_list_result[i]);
 	}
 }
-
 
 io.on('connection', function (socket) {
 
@@ -79,7 +75,6 @@ io.on('connection', function (socket) {
     });
 
     socket.on("send rated movies", function(rated_movies, user_id) {
-        console.log(user_id,rated_movies);
         user_rates_movies(user_id,rated_movies);
         update_users_liked_genres(user_id, user_genre);
         update_user_logged_in(user_id);
@@ -92,10 +87,8 @@ io.on('connection', function (socket) {
     socket.on("et eller andet", function(movies_to_rate, user_id, star_rating) {
         movies_to_rate.rating = star_rating;
         user_rates_movies(user_id, movies_to_rate);
-        console.log("hej")
     });
     
-
 });
 
 function find_movies(user_genre, movieList){
@@ -105,20 +98,18 @@ function find_movies(user_genre, movieList){
     // finde film med de genre brugeren kan lide 
     for (let i = 0; i < movieList.length; i++) {
         let current_movie_genre = movieList[i].genres.split("|"); //genrene i filmen findes
-        //console.log(current_movie_genre); test
 
          //vi vælger film der har antal genre brugeren har valgt -1 (for mere variation)
          if (compare(user_genre, current_movie_genre).length === ((user_genre.length > 1) ? (user_genre.length - 1) : user_genre.length)) {  
             same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres}); //array med film id
         } 
-
     }
     //vælger 10 random film fra same_genre_movies og sætter dem ind i movies_to_rate
     for (let i = 0; i < 10; i++) {
         movies_to_rate[i] = same_genre_movies[Math.floor(Math.random() * same_genre_movies.length)]; 
     }
 
-    console.log(movies_to_rate);
+    //console.log(movies_to_rate);
     return movies_to_rate;
 }
 
@@ -129,57 +120,45 @@ function compare(user_genre_array, movie_genre_array){
         if(user_genre === movie_genre){ 
             finalarray.push(user_genre);
         }
-    } 
-    )); 
+    })); 
     return finalarray; 
 }
 
 
 //funktion der laver objekter med movie ratings til bestemt user 
 function user_rates_movies(user_id, movies_to_rate){ 
-    /*/
+    
     let user_rating = [];
-    let test = require('./ratings_data.json'); //test skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
+    let ratings_data_file = require('./ratings_data.json'); //ratings_data_file skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
 
-    for (let i = 0; i < movies_to_rate.length; i++) {
-       user_rating[i] = {userId: user_id, movieId : movies_to_rate[i].id, rating : movies_to_rate[i].rating, timestamp : 00}; //nyt objekt
-       test.push(user_rating[i]);
-        //gem i user ?
-    } 
-    fs.writeFileSync('./ratings_data.json', JSON.stringify(test).replace(/},{/g, "},\n{"));
-    factorizeJS.update_users();
-    factorizeJS.factorize_new_user(user_id);
-    /*/
-    let user_rating = [];
-    let test = require('./ratings_data.json'); //test skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
-
+    //Sorts and transforms the data into the correct format
     for (let i = 0; i < movies_to_rate.length; i++) {
        user_rating[i] = {userId: user_id, movieId : movies_to_rate[i].id, rating : movies_to_rate[i].rating, timestamp : "00"}; //nyt objekt
-       test.push(user_rating[i]);
-        //gem i user ?
-        console.log("jeg er her");
+       ratings_data_file.push(user_rating[i]);
     } 
 
+    //If movies_to_rate is 1
     if(movies_to_rate.length === undefined){
-        console.log(movies_to_rate.id);
         user_rating = {userId: user_id, movieId : movies_to_rate.movieId, rating : movies_to_rate.rating, timestamp : "00"}; //nyt objekt
-        test.push(user_rating);
+        ratings_data_file.push(user_rating);
     }
-
-    console.log(movies_to_rate.length);
-    fs.writeFile("./ratings_data.json", JSON.stringify(test, null, 4), function (err) {
+    //Writes the data into a JSON file
+    fs.writeFile("./ratings_data.json", JSON.stringify(ratings_data_file, null, 4), function (err) {
         if (err) throw err;
-        console.log('Matrix A updated' + err);
+        console.log('ratings_data.json updated');
     });
+    
+    //Updates and factorizes the user
     factorizeJS.update_users();
     factorizeJS.factorize_new_user(user_id);
 }
 
+//User Login
 function login_user(name1, pass1, id) {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
-        var dbo = db.db("MovieRecommender");
-        var query = { name: name1, password: pass1};
+        let dbo = db.db("MovieRecommender");
+        let query = { name: name1, password: pass1};
         dbo.collection("Users").find(query).toArray(function (err, result) {
             if (err) throw err;
             if(result != "") {
@@ -193,12 +172,12 @@ function login_user(name1, pass1, id) {
     });
 }
 
-
+//User registration
 function register_user(name1, pass1, id) {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
-        var dbo = db.db("MovieRecommender");
-        var myobj = { name: name1, password: pass1, first_time_logged_in: true, liked_genres: [] };
+        let dbo = db.db("MovieRecommender");
+        let myobj = { name: name1, password: pass1, first_time_logged_in: true, liked_genres: [] };
 
         let query = {name: name1};
         dbo.collection("Users").find(query).toArray(function(err,result) {
@@ -216,10 +195,11 @@ function register_user(name1, pass1, id) {
     });
 }
 
+//To check if user has done a first time login
 function update_user_logged_in(id) {
     MongoClient.connect(url, function (err, db) {
         if(err) throw err;
-        var dbo = db.db("MovieRecommender");
+        let dbo = db.db("MovieRecommender");
 
         dbo.collection("Users").updateOne(
             {_id: ObjectID(id) },
@@ -230,10 +210,11 @@ function update_user_logged_in(id) {
     });
 }
 
+//For mongodb to check the genre the user liked
 function update_users_liked_genres(id, user_genre){
     MongoClient.connect(url, function (err, db) {
         if(err) throw err;
-        var dbo = db.db("MovieRecommender");
+        let dbo = db.db("MovieRecommender");
 
         dbo.collection("Users").updateOne(
             {_id: ObjectID(id) },

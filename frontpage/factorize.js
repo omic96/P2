@@ -1,35 +1,35 @@
-var ratingData = require('./ratings_data.json');
-var movieData = require('./data_2.json');
-var math = require('mathjs');
-var fs = require('fs');
-var saved_factor_matrix1 = require('./FactorizedMatrixA.json');
-var saved_factor_matrix2 =  require('./FactorizedMatrixB.json');
+let ratingData = require('./ratings_data.json');
+let movieData = require('./data_2.json');
+let math = require('mathjs');
+let fs = require('fs');
+let saved_factor_matrix1 = require('./FactorizedMatrixA.json');
+let saved_factor_matrix2 =  require('./FactorizedMatrixB.json');
 
-var factorized_matrix;
+let factorized_matrix;
 
 // To know what column or row a specific movie or user belongs to
 // KEY: User or Movie ID's 
-var users = {};
-var movies = {};
+let users = {};
+let movies = {};
 
 // To know what user or movie a specific column or row belongs to
 // KEY: Index of row or column
-var userRows = {};
-var movieColumns = {};
+let userRows = {};
+let movieColumns = {};
 
 // Data for all movies
 // KEY: MovieID
-var movieList = {};
+let movieList = {};
 
 // The current index of the last movie and user in the matrix
-var currentMovieIndex = 0;
-var currentUserIndex = 0;
+let currentMovieIndex = 0;
+let currentUserIndex = 0;
 
 // [X = Movies][Y = Users]
-var userMovieMatrix = [[]];
+let userMovieMatrix = [[]];
 
 // A variable to store the users data
-var user_database;
+let user_database;
 
 //Class constructor
 class user_ratings {
@@ -38,9 +38,6 @@ class user_ratings {
     this.movie  = movieID;
     this.rating = rating;
   }
-}
-function test(bedsked) {
-    console.log(bedsked);
 }
 
 module.exports = {
@@ -51,13 +48,11 @@ main: function() {
     fill_empty_ratings()
     factorized_matrix = factorize(userMovieMatrix,60,1,0.002,true,currentUserIndex, false);
 
-
-  for(let i = 0; i < 20; i++) {
-    console.log(factorized_matrix[0][i], userMovieMatrix[0][i]);
-  }
-
-    
-  },
+    /*for(let i = 0; i < 20; i++) {
+        console.log(factorized_matrix[0][i], userMovieMatrix[0][i]);
+    }
+    *///Compare factorized matrix with userMovieMatrix
+},
 update_users: function() {
     ratingData = require('./ratings_data.json');
     add_all_ratings();
@@ -73,7 +68,6 @@ get_user_ratings_server: function(the_user_id) {
 }
 
 };
-
 
 // Loads and sends all ratings to be added
 function add_all_ratings() {
@@ -93,11 +87,11 @@ function add_user_rating(user, movie, rating) {
   let movieColumn;
 
   // Check if user already has a row
-  if (user in users) {
+  if (user in users){
     userRow = users[user];
   } 
   
-  else {
+  else{
     // Give the next empty row to the current user
     userRow = currentUserIndex;
     // Save the given row for this user in the dict
@@ -110,7 +104,8 @@ function add_user_rating(user, movie, rating) {
   if (movie in movies) {
     movieColumn = movies[movie];
   } 
-  else {
+  
+  else{
     // Give the next empty column to the current movie
     movieColumn = currentMovieIndex;
     // Save the given column for this movie in the dict
@@ -128,6 +123,7 @@ function add_user_rating(user, movie, rating) {
   // Add the rating to the matrix
   userMovieMatrix[userRow][movieColumn] = rating;
 }
+
 // makes sure that every movie has a number for every movie, so if a user hasn't rated a movie, we insert 0 on that place.
 function fill_empty_ratings() {
   for (i = 0; i < currentUserIndex; i++) {
@@ -139,8 +135,9 @@ function fill_empty_ratings() {
   }
 }
 
-// Prints the movie info and ratings for all rated movies by a user
+// Prints the movie info and ratings for all rated movies by a user(Is not used in the final program. Used for debugging)
 function get_user_ratings(userId) {
+
   let currentUserRow = users[userId]
   for (i = 0; i < currentMovieIndex; i++) {
     // Only print something if the user has given a rating to this movie
@@ -153,20 +150,19 @@ function get_user_ratings(userId) {
   }
 }
 
-
-
 //Returns an array with a specfic users rating. Takes the users id as parameter.
 function get_user_ratings_array (user_id) {
-  console.log(user_id,users[user_id]);
- let currentUserRow = users[user_id]; //Using the directory to find the row connect to the specific user
- let user_array = [[]];
- for(let i = 0; i < currentMovieIndex; i++) {
-    user_array[0].push(userMovieMatrix[currentUserRow][i]);
- }
 
- return user_array;
+    let currentUserRow = users[user_id]; //Using the directory to find the row connect to the specific user
+    let user_array = [[]];
+    for(let i = 0; i < currentMovieIndex; i++) {
+        user_array[0].push(userMovieMatrix[currentUserRow][i]);
+    }
+
+    return user_array;
 }
 
+//Returns an array with a specfic users rating that has been factorized.
 function get_user_ratings_array_factorized (user_id) {
   let currentUserRow = users[user_id];
   let user_array = [[]];
@@ -199,14 +195,12 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
     for(let n = 0; n < iterations; n++) {
         for(let i = 0; i < user_count; i++) {
             for(let j = 0; j < currentMovieIndex; j++) {
-                
                 //find current value of original matrix
                 let current_value = the_matrix[i][j];
                 //Only if the user rated this movie..
                 if(current_value > 0) {
                     let error = current_value - math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));
-                    
-                    
+                
                     //Update each element in the two factor matrix, by using the update_latent_feature function.
                     for(let k = 0; k < latent_features; k++) {
                         let factor_matrix1_latent_feature = factor_matrix1[i][k];
@@ -218,18 +212,18 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
                 }
             }
         }
-        console.log(n);
+        //console.log(n); iterations count for debugging
     }
 
     //Save the two factor matrix, A & B, so that we don't have to do this process again. Each file will be overwritten when a new file is saved.
     if(!new_user) {
-    fs.writeFile("FactorizedMatrixA.json", JSON.stringify(factor_matrix1, null, 4), function (err) {
-        if (err) throw err;
-        console.log('Matrix A updated');
+        fs.writeFile("FactorizedMatrixA.json", JSON.stringify(factor_matrix1, null, 4), function (err) {
+            if (err) throw err;
+            console.log('Matrix A updated');
     });
-    fs.writeFile("FactorizedMatrixB.json", JSON.stringify(factor_matrix2, null, 4), function (err) {
-        if (err) throw err;
-        console.log('Matrix B updated');
+        fs.writeFile("FactorizedMatrixB.json", JSON.stringify(factor_matrix2, null, 4), function (err) {
+            if (err) throw err;
+            console.log('Matrix B updated');
     });
     }else{
         saved_factor_matrix1.push(factor_matrix1[0]);
@@ -238,8 +232,6 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
             console.log('Matrix A updated');
         });
     }
-    
-
     //print out the final total error
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2, user_count));
     
@@ -271,15 +263,12 @@ function make_factor_matrix (latent_features, count) {
     return factor_matrix;
 }
 
-
 //Finds the Root Mean Square Error, which tells us how far our matrix is to the target matrix
 function find_rmse (the_matrix, factor_matrix1, factor_matrix2, user_count) {
     
     let total_error = 0;
     for(let i = 0; i < user_count; i++) {
         for(let j = 0; j < currentMovieIndex; j++) {
-            
-            
             let y = the_matrix[i][j];
             //Only if the user rated this movie..
             if(y > 0) {
