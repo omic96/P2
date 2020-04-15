@@ -81,7 +81,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on("get data", function(user_id) {
-        get_user_data(user_id);
+        get_user_data(user_id, socket.id);
     });
 
     socket.on("et eller andet", function(movies_to_rate, user_id, star_rating) {
@@ -226,7 +226,7 @@ function update_users_liked_genres(id, user_genre){
 }
 
 
-function get_user_data(user_id) {
+function get_user_data(user_id, socket_id) {
 
     let user_data = {
         id : user_id,
@@ -245,12 +245,11 @@ function get_user_data(user_id) {
             if(result != "") {
                 user_data.name = result[0].name;
                 user_data.liked_genres = result[0].liked_genres;
-
-                socket.emit("send data", user_data);
+                io.sockets.connected[socket_id].emit('send data', user_data);
             }
     });
 
-    dbo.close();
+    db.close();
 });
 
 }
