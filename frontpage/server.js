@@ -4,7 +4,7 @@ let path = require('path');
 let socketIO = require('socket.io'); 
 let app = express();
 let server = http.Server(app);
-let io = socketIO(server); app.set('port', 30);
+let io = socketIO(server); app.set('port', 80);
 let fetch = require("node-fetch");
 let fs = require("fs");
 
@@ -24,8 +24,8 @@ app.get('/', function (request, response) {
 });
 
 // Starts the server.
-server.listen(30, function () {
-    console.log('Starting server on port 30');
+server.listen(80, function () {
+    console.log('Starting server on port 80');
 });
 
 //Updates and factorizes the UserMovieMatrix upon server start

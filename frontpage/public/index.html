@@ -1,10 +1,13 @@
 <html>
     <head>
         <title>Movie Recommender</title>
+        <link rel="stylesheet" type="text/css" href="css/mainStyleSheet.css">
         <script src="/socket.io/socket.io.js"></script>
     </head>
 
     <body>
+        <center class="login_page_text">
+        <h1>SPONSORERET AF ESMA :)</h1>
         <h3>Login</h3> 
         Username: <input type="input" id="username_login">
         Password: <input type="password" id="password_login">
@@ -16,7 +19,7 @@
         Password: <input type="password" id="password_register">
                   <input type="button" id="register_button" value="Register" onclick="register()">
 
-        
+        </center>
         <script>
             let socket = io();
 
