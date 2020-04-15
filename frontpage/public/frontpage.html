@@ -39,8 +39,8 @@
 			all_movies = data;
 		});
 
-		socket.on("send ratings", function(ratings) {
-			console.log(ratings);
+		socket.on("send data", function(user_data) {
+			console.log(user_data);
 		});
 
 		//puts movies with the correct genre under der correct header, uses data array function to find specific genre
@@ -133,8 +133,8 @@
 				}
 	}	
 
-	function get_my_ratings() {
-		socket.emit("get ratings", read_cookie("id"));
+	function get_my_data() {
+		socket.emit("get data", read_cookie("id"));
 	}
 
 

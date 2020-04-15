@@ -80,8 +80,8 @@ io.on('connection', function (socket) {
         update_user_logged_in(user_id);
     });
 
-    socket.on("get ratings", function(user_id) {
-        io.sockets.connected[socket.id].emit('send ratings', factorizeJS.get_user_ratings_server(user_id));
+    socket.on("get data", function(user_id) {
+        get_user_data(user_id);
     });
 
     socket.on("et eller andet", function(movies_to_rate, user_id, star_rating) {
@@ -223,4 +223,34 @@ function update_users_liked_genres(id, user_genre){
             }
         )
     });
+}
+
+
+function get_user_data(user_id) {
+
+    let user_data = {
+        id : user_id,
+        name: "",
+        liked_genres: [],
+        ratings : factorizeJS.get_user_ratings_server(user_id)
+    };
+
+    MongoClient.connect(url, function (err, db) {
+        if(err) throw err;
+        let dbo = db.db("MovieRecommender");
+
+        let query = { _id: ObjectID(user_id)};
+        dbo.collection("Users").find(query).toArray(function (err, result) {
+            if (err) throw err;
+            if(result != "") {
+                user_data.name = result[0].name;
+                user_data.liked_genres = result[0].liked_genres;
+
+                socket.emit("send data", user_data);
+            }
+    });
+
+    dbo.close();
+});
+
 }
