@@ -44,6 +44,10 @@ body {
   background-color: black;
 }
 
+.login_page_text {
+  color: white;
+}
+
 .genres_text {
 	color: white;
 	font-family: 'myFont';
