@@ -117,7 +117,7 @@ function find_movies(user_genre, movieList){
 function compare(user_genre_array, movie_genre_array){
     let finalarray = []; 
     user_genre_array.forEach((user_genre)=>movie_genre_array.forEach((movie_genre)=>{
-        if(user_genre === movie_genre){ 
+        if(user_genre.name === movie_genre){ 
             finalarray.push(user_genre);
         }
     })); 

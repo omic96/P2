@@ -14,25 +14,7 @@
 	</center>
 
 	<div id="background" class="background">
-		<div id="horror_movies">
-			<h2 class="genres_text">Gyser film </h2>
-			<div class="movie_section" id="movie_horror"> </div>
-		</div>
 
-		<div id="action_movies">
-			<h2 class="genres_text">Action film </h2>
-			<div class="movie_section" id="movie_action">  </div>
-		</div>
-
-		<div id="comedy_movies">
-			<h2 class="genres_text">Komedie</h2>
-			<div class="movie_section" id="movie_comedy"> </div>
-		</div>
-
-		<div id="romantic_movies">
-			<h2 class="genres_text">Romantiske film</h2>
-			<div class="movie_section" id="movie_romantic"> </div>
-		</div>
 	</div>
 
 	<div class="rating">
@@ -60,32 +42,10 @@
 		});
 
 		//puts movies with the correct genre under der correct header, uses data array function to find specific genre
-		setTimeout(function(){ 
-			for(let i = 0; i < all_movies.length; i++) {
-			
-
-			if(all_movies[i].genres.includes("Action")) {
-				create_elements("movie_action", i);
-			}
-
-			if(all_movies[i].genres.includes("Romance")) {
-				create_elements("movie_romantic", i);
-
-			}
-
-			if(all_movies[i].genres.includes("Comedy")) {
-				create_elements("movie_comedy", i);
-			}
-
-			if(all_movies[i].genres.includes("Horror")) {
-				create_elements("movie_horror", i);
-			}
-		} 
-
-	 }, 1000);
-
+	
 	 //function that creates our movie thumbnail and adds a overlay on mouse hover that shoves movie name and star rating feature.
 	function create_elements(main_element, i) {
+		
 				let action_section = document.getElementById(main_element);
 				
 				let movie_container = document.createElement("div");
@@ -157,20 +117,46 @@
 		}
 		
 	function personalize_page () {
-		if(!my_user.liked_genres.includes("Action")) {
-			document.getElementById("action_movies").style.display = "none";
-		}
+		create_category_divs(1);
+		create_category_divs(0);
 
-		if(!my_user.liked_genres.includes("Romance")) {
-			document.getElementById("romantic_movies").style.display = "none";
-		}
+		for(let i = 0; i < all_movies.length; i++) {
+			if(all_movies[i].genres.includes("Action")) {
+				create_elements("Action", i);
+			}
 
-		if(!my_user.liked_genres.includes("Horror")) {
-			document.getElementById("horror_movies").style.display = "none";
-		}
+			if(all_movies[i].genres.includes("Romance")) {
+				create_elements("Romance", i);
+			}
 
-		if(!my_user.liked_genres.includes("Comedy")) {
-			document.getElementById("comedy_movies").style.display = "none";
+			if(all_movies[i].genres.includes("Comedy")) {
+				create_elements("Comedy", i);
+			}
+
+			if(all_movies[i].genres.includes("Horror")) {
+				create_elements("Horror", i);
+			}
+		} 
+	}
+
+	function create_category_divs(liked_or_not) {
+		for(let i = 0; i < my_user.liked_genres.length; i++) {
+			if(my_user.liked_genres[i].liked === liked_or_not) {
+				let main_div = document.createElement("div");
+				let headline = document.createElement("h2");
+				let sub_div = document.createElement("div");
+
+				document.getElementById("background").appendChild(main_div);
+				main_div.appendChild(headline);
+				main_div.appendChild(sub_div);
+
+				headline.className = "genres_text";
+				sub_div.className = "movie_section";
+
+				sub_div.id = my_user.liked_genres[i].name;
+
+				headline.innerHTML = my_user.liked_genres[i].name;
+			}
 		}
 	}
 

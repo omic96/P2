@@ -31,9 +31,14 @@
             let array_of_genres = [];
 
             for(let i = 0; i < checkbox.length; i++) {
-                if(checkbox[i].checked) {
-                    array_of_genres.push(checkbox[i].value);
+                let obj = {
+                    name : checkbox[i].value,
+                    liked : 0
                 }
+                if(checkbox[i].checked) {
+                    obj.liked = 1;   
+                }
+                array_of_genres.push(obj);
             }
 
             socket.emit("send liked genres", array_of_genres); 
