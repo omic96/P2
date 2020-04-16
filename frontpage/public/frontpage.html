@@ -36,6 +36,7 @@
 		socket.emit("get data", read_cookie("id"));
 
 		socket.on("send data", function(user_data) {
+			all_movies = user_data.movies;
 			my_user = user_data;
 			document.getElementById("welcome_text").innerHTML = "Velkommen " + user_data.name;
 			personalize_page();
@@ -119,20 +120,20 @@
 		create_category_divs(1);
 		create_category_divs(0);
 
-		for(let i = 0; i < all_movies.length; i++) {
-			if(all_movies[i].genres.includes("Action")) {
+		for(let i = 0; i < 200; i++) {
+			if(my_user.movies[i].genres.includes("Action")) {
 				create_elements("Action", i);
 			}
 
-			if(all_movies[i].genres.includes("Romance")) {
+			if(my_user.movies[i].genres.includes("Romance")) {
 				create_elements("Romance", i);
 			}
 
-			if(all_movies[i].genres.includes("Comedy")) {
+			if(my_user.movies[i].genres.includes("Comedy")) {
 				create_elements("Comedy", i);
 			}
 
-			if(all_movies[i].genres.includes("Horror")) {
+			if(my_user.movies[i].genres.includes("Horror")) {
 				create_elements("Horror", i);
 			}
 		} 

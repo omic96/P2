@@ -54,10 +54,27 @@ main: function() {
 
     factorized_matrix = factorize(userMovieMatrix,60,1,0.002,true,currentUserIndex, false);
 
+    for (let entry in movieData) {
+      let movieID = movieData[entry].movieId;
+      let movieTitle = movieData[entry].title;
+      let movieGenres = movieData[entry].genres;
+      let movieImage = movieData[entry].poster_img;
+  
+      movieList[movieID] = {
+        title: movieTitle,
+        genres: movieGenres,
+        image: movieImage
+      };
+    }
+
     /*for(let i = 0; i < 20; i++) {
         console.log(factorized_matrix[0][i], userMovieMatrix[0][i]);
     }
     *///Compare factorized matrix with userMovieMatrix
+},
+
+find_best_ratings_server : function (user_id) {
+  return find_best_ratings(user_id);
 },
 
 
@@ -70,7 +87,7 @@ update_users: function() {
 //Factorizes only the specific user
 factorize_new_user: function(the_user_id) {
     let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,false,1,true);
-    factorized_matrix.push(new_user_matrix[0]);
+    factorized_matrix[users[the_user_id]] = new_user_matrix[0];
 },
 
 get_user_ratings_server: function(the_user_id) {
@@ -292,4 +309,27 @@ function find_rmse (the_matrix, factor_matrix1, factor_matrix2, user_count) {
         }
     }
     return total_error;
+}
+
+
+function find_best_ratings (user_id) {
+    let currentUserRow = users[user_id];
+    let topRatings = [];
+
+    for(let i = 0; i < currentMovieIndex; i++) {
+        if(factorized_matrix[currentUserRow][i] >= 4) {
+
+
+          let movie_obj = {
+            movieId : movieColumns[i],
+            title : movieList[movieColumns[i]].title,
+            genres : movieList[movieColumns[i]].genres,
+            poster_img : movieList[movieColumns[i]].image
+          }
+
+          topRatings.push(movie_obj);
+        }
+    }
+
+    return topRatings;
 }

@@ -38,25 +38,9 @@ let user_genre;
 
 //Display thumbnails
 let movie_name_array = [];
-for(let i = 0; i < movie_list_result.length; i++) {
-		let array1 = movie_list_result[i].title.split(/[()]+/).filter(function(e) { return e; });
-        let array2 = array1[0].split(/[,]+/).filter(function(e) { return e; });
-        array2.push(array1[1]);
-		let url = "http://api.themoviedb.org/3/search/movie?query=" + array2[0] + "&primary_release_year=" + array2[array2.length] + "&api_key=57d96d1905c6461a590da9ca31df2506";
-		
-		fetch(url)
-		  .then((response) => {
-		    return response.json();
-		  })
-		  .then((data) => {
-		    movie_list_result[i].poster_img = "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + data.results[0].poster_path;
-		  });
-		movie_name_array.push(movie_list_result[i]);
-}
+
 
 io.on('connection', function (socket) {
-
-	socket.emit("send_movie_array", movie_name_array);
 
 	socket.on("register", function(data) {
         register_user(data.name, data.pass,socket.id);
@@ -233,7 +217,8 @@ function get_user_data(user_id, socket_id) {
         name: "",
         liked_genres: [],
         ratings : factorizeJS.get_user_ratings_server(user_id),
-        movieCollums: factorizeJS.movieColumnsServer
+        movieColumns : factorizeJS.movieColumnsServer,
+        movies : factorizeJS.find_best_ratings_server(user_id)
     };
 
     MongoClient.connect(url, function (err, db) {
@@ -253,4 +238,37 @@ function get_user_data(user_id, socket_id) {
     db.close();
 });
 
+}
+
+
+function get_thumpnails (i_start, i_end) {
+
+    for(let i = 0; i < movie_list_result.length; i++) {
+        if(movie_list_result[i].poster_img == undefined) {
+        let array1 = movie_list_result[i].title.split(/[()]+/).filter(function(e) { return e; });
+            let array2 = array1[0].split(/[,]+/).filter(function(e) { return e; });
+            array2.push(array1[1]);
+            let url = "http://api.themoviedb.org/3/search/movie?query=" + array2[0] + "&primary_release_year=" + array2[array2.length] + "&api_key=57d96d1905c6461a590da9ca31df2506";
+            
+            fetch(url)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                movie_list_result[i].poster_img = "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + data.results[0].poster_path;
+                test++;
+            })
+            .catch ((err) => {
+                throw err;
+            });
+
+            movie_name_array.push(movie_list_result[i]);
+    }
+}
+    setTimeout(() => {
+        fs.writeFile("./data_2.json", JSON.stringify(movie_list_result, null, 4), function (err) {
+            if (err) throw err;
+            console.log('ratings_data.json updated');
+        });
+    }, 60000);
 }
