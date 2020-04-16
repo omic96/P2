@@ -32,13 +32,13 @@ server.listen(80, function () {
 //Updates and factorizes the UserMovieMatrix upon server start
 factorizeJS.main();
 
+
 let request = require("request");
 let user_genre; 
 
 //Display thumbnails
 let movie_name_array = [];
 for(let i = 0; i < movie_list_result.length; i++) {
-	if(i < 200) {
 		let array1 = movie_list_result[i].title.split(/[()]+/).filter(function(e) { return e; });
         let array2 = array1[0].split(/[,]+/).filter(function(e) { return e; });
         array2.push(array1[1]);
@@ -52,7 +52,6 @@ for(let i = 0; i < movie_list_result.length; i++) {
 		    movie_list_result[i].poster_img = "https://image.tmdb.org/t/p/w600_and_h900_bestv2" + data.results[0].poster_path;
 		  });
 		movie_name_array.push(movie_list_result[i]);
-	}
 }
 
 io.on('connection', function (socket) {
@@ -233,7 +232,8 @@ function get_user_data(user_id, socket_id) {
         id : user_id,
         name: "",
         liked_genres: [],
-        ratings : factorizeJS.get_user_ratings_server(user_id)
+        ratings : factorizeJS.get_user_ratings_server(user_id),
+        movieCollums: factorizeJS.movieColumnsServer
     };
 
     MongoClient.connect(url, function (err, db) {

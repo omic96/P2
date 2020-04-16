@@ -42,11 +42,16 @@ class user_ratings {
 
 //Exports functions to server.js as FactorizeJS
 module.exports = {
+
+movieColumnsServer : 0,
+
 main: function() {
     // Add all entries
     add_all_ratings();
     // Fill all empty entries
     fill_empty_ratings()
+    this.movieColumnsServer = movieColumns;
+
     factorized_matrix = factorize(userMovieMatrix,60,1,0.002,true,currentUserIndex, false);
 
     /*for(let i = 0; i < 20; i++) {
@@ -54,6 +59,7 @@ main: function() {
     }
     *///Compare factorized matrix with userMovieMatrix
 },
+
 
 update_users: function() {
     ratingData = require('./ratings_data.json');
