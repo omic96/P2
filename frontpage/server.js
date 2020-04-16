@@ -11,6 +11,7 @@ let fs = require("fs");
 let movieList = require('./data_2.json');
 let movie_list_result = movieList;
 
+//Selected function exported from factorize.js
 let factorizeJS = require('./factorize.js');
 
 //MongoDb
@@ -210,7 +211,7 @@ function update_user_logged_in(id) {
     });
 }
 
-//For mongodb to check the genre the user liked
+//For mongodb to check the genres the user prefers
 function update_users_liked_genres(id, user_genre){
     MongoClient.connect(url, function (err, db) {
         if(err) throw err;

@@ -40,6 +40,7 @@ class user_ratings {
   }
 }
 
+//Exports functions to server.js as FactorizeJS
 module.exports = {
 main: function() {
     // Add all entries
@@ -53,16 +54,19 @@ main: function() {
     }
     *///Compare factorized matrix with userMovieMatrix
 },
+
 update_users: function() {
     ratingData = require('./ratings_data.json');
     add_all_ratings();
     fill_empty_ratings();
 },
 
+//Factorizes only the specific user
 factorize_new_user: function(the_user_id) {
     let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,false,1,true);
     factorized_matrix.push(new_user_matrix[0]);
 },
+
 get_user_ratings_server: function(the_user_id) {
     return get_user_ratings_array_factorized(the_user_id);
 }
@@ -186,7 +190,9 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
         factor_matrix1 = saved_factor_matrix1;
         factor_matrix2 = saved_factor_matrix2;
         console.log("Starting matrix factorization, with saved matrixes.");
-    }else{
+    }
+    
+    else{
         factor_matrix1 = make_factor_matrix(latent_features,user_count);
         factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
         console.log("Starting matrix factorization, with new matrixes.")
@@ -225,7 +231,9 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
             if (err) throw err;
             console.log('Matrix B updated');
     });
-    }else{
+    }
+    
+    else{
         saved_factor_matrix1.push(factor_matrix1[0]);
         fs.writeFile("FactorizedMatrixA.json", JSON.stringify(saved_factor_matrix1, null, 4), function (err) {
             if (err) throw err;
