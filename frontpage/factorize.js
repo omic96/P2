@@ -52,7 +52,15 @@ main: function() {
     fill_empty_ratings()
     this.movieColumnsServer = movieColumns;
 
-    factorized_matrix = factorize(userMovieMatrix,60,1,0.002,true,currentUserIndex, false);
+    factorized_matrix = factorize(userMovieMatrix,60,1,0.002,0.002,true,currentUserIndex, false);
+
+    /*
+    for(let i = 0; i < 400;i++) {
+        console.log(factorized_matrix[0][i],userMovieMatrix[0][i]);
+    }
+    */
+
+    
 
     for (let entry in movieData) {
       let movieID = movieData[entry].movieId;
@@ -66,11 +74,6 @@ main: function() {
         image: movieImage
       };
     }
-
-    /*for(let i = 0; i < 20; i++) {
-        console.log(factorized_matrix[0][i], userMovieMatrix[0][i]);
-    }
-    *///Compare factorized matrix with userMovieMatrix
 },
 
 find_best_ratings_server : function (user_id) {
@@ -86,7 +89,7 @@ update_users: function() {
 
 //Factorizes only the specific user
 factorize_new_user: function(the_user_id) {
-    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,false,1,true);
+    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,0.002,false,1,true);
     factorized_matrix[users[the_user_id]] = new_user_matrix[0];
 },
 
@@ -203,7 +206,7 @@ function get_user_ratings_array_factorized (user_id) {
 //Factorize a given matrix. It is possible to change the amount of latent features, iterations, learning rate and how many users to look at.
 //the use_saved parameter determine whetever the function should use saved factor matrixes, or use new random ones.
 //After this function is finished, it safes the two factor matrixes in two documents;  FactorizedMatrixA.json & FactorizedMatrixB.json
-function factorize(the_matrix, latent_features, iterations, learning_rate, use_saved, user_count, new_user) {  
+function factorize(the_matrix, latent_features, iterations, learning_rate, regularization_rate, use_saved, user_count, new_user) {  
     //Make the two factor matrices, 1 & 2, with random numbers.
     let factor_matrix1;
     let factor_matrix2;
@@ -235,13 +238,13 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
                         let factor_matrix1_latent_feature = factor_matrix1[i][k];
                         let factor_matrix2_latent_feature = factor_matrix2[k][j];
                         
-                        factor_matrix1[i][k] = update_latent_feature(factor_matrix1_latent_feature,factor_matrix2_latent_feature,error,learning_rate);
-                        factor_matrix2[k][j] = update_latent_feature(factor_matrix2_latent_feature,factor_matrix1_latent_feature,error,learning_rate);
+                        factor_matrix1[i][k] = update_latent_feature(factor_matrix1_latent_feature,factor_matrix2_latent_feature,error,learning_rate,regularization_rate);
+                        factor_matrix2[k][j] = update_latent_feature(factor_matrix2_latent_feature,factor_matrix1_latent_feature,error,learning_rate,regularization_rate);
                     }
                 }
             }
         }
-        //console.log(n); iterations count for debugging
+        console.log(n);
     }
 
     //Save the two factor matrix, A & B, so that we don't have to do this process again. Each file will be overwritten when a new file is saved.
@@ -271,9 +274,11 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, use_s
 }
 
 // Updates the number is our matrices, moving us hopefully moving us closer to our true values from our target matrix
-function update_latent_feature(latent1, latent2, error, learning_rate) {
+function update_latent_feature(latent1, latent2, error, learning_rate, regularization_rate) {
   //The formula from latex, in the matrix factorization section
-    return latent1 + 2 * learning_rate * error * latent2;
+    //return latent1 + 2 * learning_rate * error * latent2;
+    
+    return latent1 + learning_rate * (2 * error * latent2 - regularization_rate * latent1);
 }
 
 //Provides us with the column needed to multiply 
@@ -283,7 +288,8 @@ function column_vector(matrix, index) {
 
 //Generates the two factor matrices filled with random numbers to calculate on.
 function make_factor_matrix (latent_features, count) {
-    let factor_matrix = [];
+    
+  let factor_matrix = [];
     for(let i = 0; i < count; i++) {
         factor_matrix.push([]);
         for(let j = 0; j < latent_features; j++) {
@@ -296,7 +302,7 @@ function make_factor_matrix (latent_features, count) {
 
 //Finds the Root Mean Square Error, which tells us how far our matrix is to the target matrix
 function find_rmse (the_matrix, factor_matrix1, factor_matrix2, user_count) {
-    
+
     let total_error = 0;
     for(let i = 0; i < user_count; i++) {
         for(let j = 0; j < currentMovieIndex; j++) {
