@@ -137,3 +137,19 @@ body {
 img {
 	margin-left: 2px;
 }
+
+.image_div {
+  width:250px;
+  height: 250px;
+
+}
+
+.movie_div {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 450px;
+  height: 450px;
+  margin-top: -125px;
+  margin-left: -125px;
+}

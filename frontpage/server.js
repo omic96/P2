@@ -85,11 +85,11 @@ function find_movies(user_genre, movieList){
 
          //vi vælger film der har antal genre brugeren har valgt -1 (for mere variation)
          if (compare(user_genre, current_movie_genre).length === ((user_genre.length > 1) ? (user_genre.length - 1) : user_genre.length)) {  
-            same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres}); //array med film id
+            same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id
         } 
     }
     //vælger 10 random film fra same_genre_movies og sætter dem ind i movies_to_rate
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 30; i++) {
         movies_to_rate[i] = same_genre_movies[Math.floor(Math.random() * same_genre_movies.length)]; 
     }
 
