@@ -162,6 +162,54 @@
 
 	</script>
 
+
+<!-- 
+	VORES KODE TIL GRAFEN!!!
+<div id="yo"></div>
+
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script>
+google.charts.load('44', {
+    callback: drawBackgroundColor,
+    packages: ['corechart']
+  });
+  
+  function drawBackgroundColor() {
+	setTimeout(() => {
+	
+	let c = [];
+	for(let i = 300; i < 400; i++) {
+		c.push([i,my_user.ratings[0][i]]);
+	}
+	console.log(c);
+  
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'Date');
+    data.addColumn('number', 'Distance');
+  
+    data.addRows(c);
+  
+    var options = {
+      hAxis: {
+        title: 'Time'
+      },
+      vAxis: {
+        title: 'Popularity'
+      },
+      backgroundColor: '#f1f8e9'
+    };
+  
+    var chart = new google.visualization.LineChart(document.getElementById('yo'));
+    chart.draw(data, options);
+	}, 5000);
+	
+  }
+</script>
+-->
+
+
+
 </body>
 
 </html>
