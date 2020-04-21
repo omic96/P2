@@ -90,7 +90,8 @@ update_users: function() {
 //Factorizes only the specific user
 factorize_new_user: function(the_user_id) {
     let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,0.002,false,1,true);
-    factorized_matrix[users[the_user_id]] = new_user_matrix[0];
+    factorized_matrix = factorize(userMovieMatrix,60,1,0.002,0.002,true,currentUserIndex, false);
+
 },
 
 get_user_ratings_server: function(the_user_id) {
