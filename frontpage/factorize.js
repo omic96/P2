@@ -52,15 +52,14 @@ main: function() {
     fill_empty_ratings()
     this.movieColumnsServer = movieColumns;
 
-    factorized_matrix = factorize(userMovieMatrix,60,1,0.002,0.002,true,currentUserIndex, false);
+    //factorized_matrix = factorize(userMovieMatrix,60,1,0.002,0.002,true,currentUserIndex, false);
 
+    factorized_matrix = math.multiply(saved_factor_matrix1,saved_factor_matrix2);
     /*
     for(let i = 0; i < 400;i++) {
         console.log(factorized_matrix[0][i],userMovieMatrix[0][i]);
     }
     */
-
-    
 
     for (let entry in movieData) {
       let movieID = movieData[entry].movieId;
@@ -89,9 +88,8 @@ update_users: function() {
 
 //Factorizes only the specific user
 factorize_new_user: function(the_user_id) {
-    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,0.002,false,1,true);
-    factorized_matrix = factorize(userMovieMatrix,60,1,0.002,0.002,true,currentUserIndex, false);
-
+    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,0.002,false,1,true, the_user_id);
+    factorized_matrix[users[the_user_id]] = new_user_matrix[0];
 },
 
 get_user_ratings_server: function(the_user_id) {
@@ -207,7 +205,7 @@ function get_user_ratings_array_factorized (user_id) {
 //Factorize a given matrix. It is possible to change the amount of latent features, iterations, learning rate and how many users to look at.
 //the use_saved parameter determine whetever the function should use saved factor matrixes, or use new random ones.
 //After this function is finished, it safes the two factor matrixes in two documents;  FactorizedMatrixA.json & FactorizedMatrixB.json
-function factorize(the_matrix, latent_features, iterations, learning_rate, regularization_rate, use_saved, user_count, new_user) {  
+function factorize(the_matrix, latent_features, iterations, learning_rate, regularization_rate, use_saved, user_count, new_user, user_id) {  
     //Make the two factor matrices, 1 & 2, with random numbers.
     let factor_matrix1;
     let factor_matrix2;
@@ -221,7 +219,11 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
     
     else{
         factor_matrix1 = make_factor_matrix(latent_features,user_count);
-        factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
+        if(!new_user) {
+            factor_matrix2 = math.transpose(make_factor_matrix(latent_features,currentMovieIndex));
+        }else{
+            factor_matrix2 = saved_factor_matrix2;
+        }
         console.log("Starting matrix factorization, with new matrixes.")
     }
     
@@ -240,7 +242,10 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
                         let factor_matrix2_latent_feature = factor_matrix2[k][j];
                         
                         factor_matrix1[i][k] = update_latent_feature(factor_matrix1_latent_feature,factor_matrix2_latent_feature,error,learning_rate,regularization_rate);
-                        factor_matrix2[k][j] = update_latent_feature(factor_matrix2_latent_feature,factor_matrix1_latent_feature,error,learning_rate,regularization_rate);
+                        
+                        if(!new_user) {
+                          factor_matrix2[k][j] = update_latent_feature(factor_matrix2_latent_feature,factor_matrix1_latent_feature,error,learning_rate,regularization_rate);
+                        }
                     }
                 }
             }
@@ -261,11 +266,13 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
     }
     
     else{
-        saved_factor_matrix1.push(factor_matrix1[0]);
+      
+        saved_factor_matrix1[users[user_id]] = factor_matrix1[0];
         fs.writeFile("FactorizedMatrixA.json", JSON.stringify(saved_factor_matrix1, null, 4), function (err) {
             if (err) throw err;
             console.log('Matrix A updated');
         });
+      
     }
     //print out the final total error
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2, user_count));
