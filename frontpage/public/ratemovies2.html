@@ -13,28 +13,33 @@
 <body>
     
     <div id="movie" class="movie_div">
+        
         <div id="image_div" class="image_div">
+            <center>
+                <h2 id="headline" class="genres_text">Titel</h2>
+            </center>
             <img class="image_div" src="https://inges-kattehjem.dk/wp-content/uploads/2019/12/kattensomvoksen-1024x768.jpg" id="poster_img">
+
+            <br><br>
+            <div class="rating" style="position:relative; top: 0%;left: 20%;">
+                <input type="radio" name="star">
+                <label onclick="rate_movie('5')"></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('4')"></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('3')" ></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('2')"></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('1')"></label>
+            </div>
+            <center>
+                <input type="button" value="Det lort har jeg ik set, okæ" onclick="dont_know_rating()">
+    
+            </center>
         </div>
+        
 
-        <h2 id="headline">Titel</h2>
-        <br>
-
-        <div class="rating" style="position:relative; top: 0%;left: 0%;">
-            <input type="radio" name="star">
-            <label onclick="rate_movie('5')"></label>
-            <input type="radio" name="star">
-            <label onclick="rate_movie('4')"></label>
-            <input type="radio" name="star">
-            <label onclick="rate_movie('3')" ></label>
-            <input type="radio" name="star">
-            <label onclick="rate_movie('2')"></label>
-            <input type="radio" name="star">
-            <label onclick="rate_movie('1')"></label>
-        </div>
-
-
-             <input type="button" value="Det lort har jeg ik set, okæ" onclick="dont_know_rating()">
          
       
     </div>
@@ -50,6 +55,7 @@
         let rated_movies = 0;
         
         socket.on("send movielist", function(movielist) {
+            console.log(movielist);
             all_movies = movielist;
             insert_movie(curr_movie);
             // rate_movie(movielist);
