@@ -27,6 +27,11 @@
 
 		let my_user;
 
+
+		let all_horror_movies = [];
+		let all_comedy_movies = [];
+		let all_romance_movies = [];
+		let all_action_movies = [];
 		//Loads array of all movies when the server is on, 
 		let all_movies = [];
 		socket.on("send_movie_array", function(data) {
@@ -40,6 +45,26 @@
 			my_user = user_data;
 			document.getElementById("welcome_text").innerHTML = "Velkommen " + user_data.name;
 			personalize_page();
+
+			for(let i = 0; i < all_movies.length; i++) {
+				if(all_movies[i].genres.includes("Horror")) {
+					all_horror_movies.push(all_movies[i]);
+				}
+				if(all_movies[i].genres.includes("Action")) {
+					all_action_movies.push(all_movies[i]);
+				}
+				if(all_movies[i].genres.includes("Romance")) {
+					all_romance_movies.push(all_movies[i]);
+				}
+				if(all_movies[i].genres.includes("Comedy")) {
+					all_comedy_movies.push(all_movies[i]);
+				}
+			}
+
+			console.log("Horror: " +  all_horror_movies.length);
+			console.log("ACtion: " +  all_action_movies.length);
+			console.log("Comedy: " +  all_comedy_movies.length);
+			console.log("Romance: " +  all_romance_movies.length);
 		});
 
 		//puts movies with the correct genre under der correct header, uses data array function to find specific genre
@@ -120,7 +145,7 @@
 		create_category_divs(1);
 		create_category_divs(0);
 
-		for(let i = 0; i < 200; i++) {
+		for(let i = 0; i < 500; i++) {
 			if(my_user.movies[i].genres.includes("Action")) {
 				create_elements("Action", i);
 			}

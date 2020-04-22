@@ -124,7 +124,20 @@ function user_rates_movies(user_id, movies_to_rate){
     //If movies_to_rate is 1
     if(movies_to_rate.length === undefined){
         user_rating = {userId: user_id, movieId : movies_to_rate.movieId, rating : movies_to_rate.rating, timestamp : "00"}; //nyt objekt
-        ratings_data_file.push(user_rating);
+
+        //Check if rating already exist
+        let already_exist = 0;
+        for(let i = 100800; i < ratings_data_file.length; i++) {
+            if(ratings_data_file[i].movieId == movies_to_rate.movieId && ratings_data_file[i].userId == user_id) {
+                already_exist = i;
+            }
+        }
+
+        if(already_exist > 0) { 
+            ratings_data_file[already_exist] = user_rating;
+        }else {
+            ratings_data_file.push(user_rating);
+        }
     }
     //Writes the data into a JSON file
     fs.writeFile("./ratings_data.json", JSON.stringify(ratings_data_file, null, 4), function (err) {
