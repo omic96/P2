@@ -52,7 +52,7 @@
         socket.on("send movielist", function(movielist) {
             all_movies = movielist;
             insert_movie(curr_movie);
-            //rate_movie(movielist);
+            // rate_movie(movielist);
         });
 
         console.log(read_cookie("id"));
@@ -67,7 +67,7 @@
             all_rated_moives.push(all_movies[curr_movie]);
             curr_movie++;
             rated_movies++;
-            if(rated_movies != 10) {
+            if(rated_movies != 10) { 
                 insert_movie(curr_movie);
             }else{
                 socket.emit("send rated movies", all_rated_moives, read_cookie("id"));
@@ -75,7 +75,7 @@
             }
         }
 
-        function rate_movie2(movies_to_rate){
+       /* function rate_movie2(movies_to_rate){
             let rating = 0; 
             
             for (let index = 0; index < movies_to_rate.length; index++) {
@@ -90,12 +90,20 @@
                 
                     movies_to_rate[index].rating = rating;
             }
-        }
+        } */
 
         function insert_movie(movie_index) {
-            document.getElementById("headline").innerHTML = all_movies[movie_index].title;
-            document.getElementById("poster_img").src = all_movies[movie_index].image;
-            console.log(all_movies[movie_index]);
+            if (!(all_rated_moives.include(all_movies[movie_index]))){
+                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
+                document.getElementById("poster_img").src = all_movies[movie_index].image;
+                console.log(all_movies[movie_index]);
+            } 
+            else {
+                movie_index++;
+                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
+                document.getElementById("poster_img").src = all_movies[movie_index].image;
+                console.log(all_movies[movie_index]);
+            }
         }
 
         function read_cookie(name) {

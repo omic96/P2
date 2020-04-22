@@ -84,13 +84,27 @@ function find_movies(user_genre, movieList){
         let current_movie_genre = movieList[i].genres.split("|"); //genrene i filmen findes
 
          //vi vælger film der har antal genre brugeren har valgt -1 (for mere variation)
-         if (compare(user_genre, current_movie_genre).length === ((user_genre.length > 1) ? (user_genre.length - 1) : user_genre.length)) {  
-            same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id
+         if (user_genre.length === undefined) {
+             if (compare(user_genre, current_movie_genre).length === undefined {  
+                same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id
+         }
+         else {
+            if ((compare(user_genre, current_movie_genre).length === user_genre.length - 1) {
+                same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id
+            }
+         }
+
+
+    
+         /* if (compare(user_genre, current_movie_genre).length === ((user_genre.length > 1) ? (user_genre.length - 1) : user_genre.length)) {  
+            same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id */
         } 
     }
     //vælger 10 random film fra same_genre_movies og sætter dem ind i movies_to_rate
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 100; i++) {
         movies_to_rate[i] = same_genre_movies[Math.floor(Math.random() * same_genre_movies.length)]; 
+
+
     }
 
     //console.log(movies_to_rate);
