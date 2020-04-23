@@ -338,7 +338,8 @@ function find_best_ratings (user_id) {
             movieId : movieColumns[i],
             title : movieList[movieColumns[i]].title,
             genres : movieList[movieColumns[i]].genres,
-            poster_img : movieList[movieColumns[i]].image
+            poster_img : movieList[movieColumns[i]].image,
+            rating : Math.round(factorized_matrix[currentUserRow][i])
           }
 
           topRatings.push(movie_obj);

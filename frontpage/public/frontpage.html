@@ -26,12 +26,10 @@
 		let socket = io();
 
 		let my_user;
+		let all_genres = ["Horror", "Action", "Romance", "Comedy", "Western", "Fantasy", "Thriller", "Musical", "Sci-Fi", "Children", "Animation", 
+			"Documentary", "Mystery", "Adventure", "Drama", "Crime"];
+		let all_liked_genres = [];
 
-
-		let all_horror_movies = [];
-		let all_comedy_movies = [];
-		let all_romance_movies = [];
-		let all_action_movies = [];
 		//Loads array of all movies when the server is on, 
 		let all_movies = [];
 		socket.on("send_movie_array", function(data) {
@@ -43,33 +41,22 @@
 		socket.on("send data", function(user_data) {
 			all_movies = user_data.movies;
 			my_user = user_data;
+
+
+			//Add all liked genres to all_liked_genres array. 
+			for(let i = 0; i < my_user.liked_genres.length; i++) {
+				if(my_user.liked_genres[i].liked == 1) {
+					all_liked_genres.push(my_user.liked_genres[i].name);
+				}
+			}
 			document.getElementById("welcome_text").innerHTML = "Velkommen " + user_data.name;
 			personalize_page();
 
-			for(let i = 0; i < all_movies.length; i++) {
-				if(all_movies[i].genres.includes("Horror")) {
-					all_horror_movies.push(all_movies[i]);
-				}
-				if(all_movies[i].genres.includes("Action")) {
-					all_action_movies.push(all_movies[i]);
-				}
-				if(all_movies[i].genres.includes("Romance")) {
-					all_romance_movies.push(all_movies[i]);
-				}
-				if(all_movies[i].genres.includes("Comedy")) {
-					all_comedy_movies.push(all_movies[i]);
-				}
-			}
-
-			console.log("Horror: " +  all_horror_movies.length);
-			console.log("ACtion: " +  all_action_movies.length);
-			console.log("Comedy: " +  all_comedy_movies.length);
-			console.log("Romance: " +  all_romance_movies.length);
 		});
 
 		//puts movies with the correct genre under der correct header, uses data array function to find specific genre
 		 //function that creates our movie thumbnail and adds a overlay on mouse hover that shoves movie name and star rating feature.
-	function create_elements(main_element, i) {
+	function create_elements(main_element, i, curr_movies) {
 		
 				let action_section = document.getElementById(main_element);
 				
@@ -96,11 +83,11 @@
 					//registers the users vote based on the amount of stars given and saves them in rating document file.
 					let star_label = document.createElement("label");
 					star_label.onclick = function(){
-						console.log(all_movies[i].title);
-						console.log(all_movies[i].movieId);
+						console.log(curr_movies[i].title);
+						console.log(curr_movies[i].movieId);
 						console.log(star_input.value);
-						//console.log(all_movies[i].rating);
-						socket.emit("et eller andet", all_movies[i], read_cookie("id"), star_input.value);
+						//console.log(curr_movies[i].rating);
+						socket.emit("et eller andet", curr_movies[i], read_cookie("id"), star_input.value);
 					};
 
 					star_ratings.appendChild(star_input);
@@ -124,12 +111,12 @@
 				star_ratings.className = "rating";
 				
 
-				movie_title_text.innerHTML = all_movies[i].title;
-				movie_MovieId.innerHTML = all_movies[i].movieId;
+				movie_title_text.innerHTML = curr_movies[i].title;
+				movie_MovieId.innerHTML = curr_movies[i].movieId;
 
 				//ensures that if a movie has no thumbnail is given a placeholder 
-				if(all_movies[i].poster_img != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
-				movie_image.src = all_movies[i].poster_img;
+				if(curr_movies[i].poster_img != "https://image.tmdb.org/t/p/w600_and_h900_bestv2null") {
+				movie_image.src = curr_movies[i].poster_img;
 				}else{
 				movie_image.src = "https://media.discordapp.net/attachments/691973400683479060/692022667477385287/no-image-available-icon-flat-260nw-1240855801.png";
 				}
@@ -145,23 +132,12 @@
 		create_category_divs(1);
 		create_category_divs(0);
 
-		for(let i = 0; i < 500; i++) {
-			if(my_user.movies[i].genres.includes("Action")) {
-				create_elements("Action", i);
+			for(let i = 0; i < all_genres.length; i++) {
+				let curr_movies = sort_movies_by_genres_and_ratings(all_genres[i]);
+				for(let j = 0; j < 20; j++) {
+					create_elements(all_genres[i],j,curr_movies);
+				}
 			}
-
-			if(my_user.movies[i].genres.includes("Romance")) {
-				create_elements("Romance", i);
-			}
-
-			if(my_user.movies[i].genres.includes("Comedy")) {
-				create_elements("Comedy", i);
-			}
-
-			if(my_user.movies[i].genres.includes("Horror")) {
-				create_elements("Horror", i);
-			}
-		} 
 	}
 
 	function create_category_divs(liked_or_not) {
@@ -183,6 +159,27 @@
 				headline.innerHTML = my_user.liked_genres[i].name;
 			}
 		}
+	}
+
+	function sort_movies_by_genres_and_ratings (genre) {
+		let new_movie_array = [];
+		
+		for(let i = 0; i < all_movies.length; i++) {
+			if(all_movies[i].genres.includes(genre)) {
+				let new_movie = all_movies[i];
+				new_movie.score = 0;
+				for(let j = 0; j < all_liked_genres.length; j++) {
+					if(all_movies[i].genres.includes(all_liked_genres[j])) {
+						new_movie.score++;
+					}
+				}
+				new_movie.score += new_movie.rating;
+				new_movie_array.push(new_movie);
+			}
+		}
+		
+		new_movie_array.sort((a,b) => (a.score < b.score) ? 1 : -1 );
+		return new_movie_array;
 	}
 
 	</script>
