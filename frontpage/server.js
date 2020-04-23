@@ -80,31 +80,42 @@ function find_movies(user_genre, movieList){
     let movies_to_rate = [];
 
     // finde film med de genre brugeren kan lide 
+    /*/
     for (let i = 0; i < movieList.length; i++) {
+        
         let current_movie_genre = movieList[i].genres.split("|"); //genrene i filmen findes
-
+        console.log(user_genre);
          //vi vælger film der har antal genre brugeren har valgt -1 (for mere variation)
          if (user_genre.length === undefined) {
-             if (compare(user_genre, current_movie_genre).length === undefined {  
-                same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id
-         }
+             if (compare(user_genre, current_movie_genre).length === undefined) {  
+                same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film i
+             }
+        }
          else {
-            if ((compare(user_genre, current_movie_genre).length === user_genre.length - 1) {
+            if (compare(user_genre, current_movie_genre).length === user_genre.length - 1) {
                 same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id
             }
          }
 
+        }
+    /*/
+         for(let i = 0; i < user_genre.length; i++) {
+             if(user_genre[i].liked == 1) {
+                 for(let j = 0; j < movieList.length; j++) {
+                     if(movieList[j].genres.includes(user_genre[i].name)) {
+                        same_genre_movies.push({id: movieList[j].movieId, title: movieList[j].title, genre: movieList[j].genres, image: movieList[j].poster_img}); //array med film id
+                     }
+                 }
+             }
+         }
 
-    
          /* if (compare(user_genre, current_movie_genre).length === ((user_genre.length > 1) ? (user_genre.length - 1) : user_genre.length)) {  
             same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id */
-        } 
-    }
+    
     //vælger 10 random film fra same_genre_movies og sætter dem ind i movies_to_rate
-    for (let i = 0; i < 100; i++) {
-        movies_to_rate[i] = same_genre_movies[Math.floor(Math.random() * same_genre_movies.length)]; 
-
-
+    console.log(same_genre_movies.length);
+    for (let i = 0; i < 250; i++) {
+        movies_to_rate[i] = same_genre_movies[Math.floor(Math.random() * same_genre_movies.length)] ; 
     }
 
     //console.log(movies_to_rate);

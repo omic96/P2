@@ -51,6 +51,7 @@
 
         let all_movies;
         let all_rated_moives = [];
+        let dont_know_movies =[];
         let curr_movie = 0;
         let rated_movies = 0;
         
@@ -64,6 +65,7 @@
         console.log(read_cookie("id"));
 
         function dont_know_rating () {
+            dont_know_movies.push(all_movies[curr_movie]);
             curr_movie++;
             insert_movie(curr_movie);
         }
@@ -99,17 +101,48 @@
         } */
 
         function insert_movie(movie_index) {
-            if (!(all_rated_moives.include(all_movies[movie_index]))){
+            
+            if(!check_if_movie_exist(all_rated_moives,all_movies[movie_index].title) && !check_if_movie_exist(dont_know_movies,all_movies[movie_index].title)) {
+
+                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
+                document.getElementById("poster_img").src = all_movies[movie_index].image;
+                console.log(all_movies[movie_index]); 
+            }else{
+                curr_movie++;
+                insert_movie(curr_movie);
+            }
+            
+            
+            
+            
+            /*/
+            if ((!(all_rated_moives.includes(all_movies[movie_index])))){
+                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
+                document.getElementById("poster_img").src = all_movies[movie_index].image;
+
+            else if (!(dont_know_movies.includes(all_movies[movie_index]))){
                 document.getElementById("headline").innerHTML = all_movies[movie_index].title;
                 document.getElementById("poster_img").src = all_movies[movie_index].image;
                 console.log(all_movies[movie_index]);
-            } 
+            }
             else {
                 movie_index++;
                 document.getElementById("headline").innerHTML = all_movies[movie_index].title;
                 document.getElementById("poster_img").src = all_movies[movie_index].image;
                 console.log(all_movies[movie_index]);
             }
+
+            /*/
+            
+        }
+        
+        function check_if_movie_exist (array, title) {
+            for(let i = 0; i < array.length; i++) {
+                if(array[i].title == title) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         function read_cookie(name) {
