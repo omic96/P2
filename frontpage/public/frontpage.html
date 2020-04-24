@@ -11,7 +11,9 @@
 <body style="margin: 0;">
 	<center>
 		<h1 id="welcome_text" class="genres_text"></h1>
+		<input type="button" value="Reset Account" onclick="reset_account()">
 	</center>
+	
 
 	<div id="background" class="background">
 
@@ -180,6 +182,11 @@
 		
 		new_movie_array.sort((a,b) => (a.score < b.score) ? 1 : -1 );
 		return new_movie_array;
+	}
+
+	function reset_account () {
+		location.href="/";
+		socket.emit("reset account", read_cookie("id"));
 	}
 
 	</script>

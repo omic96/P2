@@ -76,7 +76,11 @@ main: function() {
 },
 
 find_best_ratings_server : function (user_id) {
-  return find_best_ratings(user_id);
+    return find_best_ratings(user_id);
+},
+
+remove_row_from_matrix_a_server : function (user_id) {
+    remove_row_from_matrix_a(user_id);
 },
 
 
@@ -266,7 +270,6 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
     }
     
     else{
-      
         saved_factor_matrix1[users[user_id]] = factor_matrix1[0];
         fs.writeFile("FactorizedMatrixA.json", JSON.stringify(saved_factor_matrix1, null, 4), function (err) {
             if (err) throw err;
@@ -274,6 +277,9 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
         });
       
     }
+
+
+
     //print out the final total error
     console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2, user_count));
     
@@ -287,6 +293,14 @@ function update_latent_feature(latent1, latent2, error, learning_rate, regulariz
     //return latent1 + 2 * learning_rate * error * latent2;
     
     return latent1 + learning_rate * (2 * error * latent2 - regularization_rate * latent1);
+}
+
+function remove_row_from_matrix_a (user_id) {
+    saved_factor_matrix1.splice(users[user_id],1);
+    fs.writeFile("FactorizedMatrixA.json", JSON.stringify(saved_factor_matrix1, null, 4), function (err) {
+      if (err) throw err;
+      console.log('Matrix A updated');
+  });
 }
 
 //Provides us with the column needed to multiply 
