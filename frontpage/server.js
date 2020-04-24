@@ -61,7 +61,7 @@ io.on('connection', function (socket) {
     socket.on("send rated movies", function(rated_movies, user_id) {
         user_rates_movies(user_id,rated_movies);
         update_users_liked_genres(user_id, user_genre);
-        update_user_logged_in(user_id);
+        update_user_logged_in(user_id, false);
     });
 
     socket.on("get data", function(user_id) {
@@ -72,6 +72,10 @@ io.on('connection', function (socket) {
         movies_to_rate.rating = star_rating;
         user_rates_movies(user_id, movies_to_rate);
     });
+
+    socket.on("reset account", function(id) {
+        reset_user(id);
+    })
     
 });
 
@@ -194,6 +198,7 @@ function login_user(name1, pass1, id) {
     });
 }
 
+
 //User registration
 function register_user(name1, pass1, id) {
     MongoClient.connect(url, function (err, db) {
@@ -218,7 +223,7 @@ function register_user(name1, pass1, id) {
 }
 
 //To check if user has done a first time login
-function update_user_logged_in(id) {
+function update_user_logged_in(id, set) {
     MongoClient.connect(url, function (err, db) {
         if(err) throw err;
         let dbo = db.db("MovieRecommender");
@@ -226,10 +231,34 @@ function update_user_logged_in(id) {
         dbo.collection("Users").updateOne(
             {_id: ObjectID(id) },
             {
-                $set: {first_time_logged_in: false} 
+                $set: {first_time_logged_in: set} 
             }
         )
     });
+}
+
+function reset_user (id) {
+    let ratings_data_file = require('./ratings_data.json');
+    //Remove the users row in Matrix A
+    factorizeJS.remove_row_from_matrix_a_server(id);
+    console.log(ratings_data_file.length);
+
+    //Remove all ratings from ratings_data.json
+    for(let i = 100800; i < ratings_data_file.length; i++) {
+        if(ratings_data_file[i].userId === id) {
+            ratings_data_file.splice(i,1);
+            i--;
+        }
+    }
+
+    console.log(ratings_data_file.length);
+    fs.writeFile("./ratings_data.json", JSON.stringify(ratings_data_file, null, 4), function (err) {
+        if (err) throw err;
+        console.log('ratings_data.json updated');
+    });
+
+    //Change first time loggged in, in mongodb.
+    update_user_logged_in(id,true);
 }
 
 //For mongodb to check the genres the user prefers
