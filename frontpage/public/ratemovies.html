@@ -4,52 +4,56 @@
     <title>hej</title>
     <meta charset="UTF-8">
     <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/mainStyleSheet.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <!-- asks the user to select genres -->
-
-    <h1>hej vælg nogle genre</h1>
-
+    <!-- asks the user to select genres --> 
+    <div class="pick_genres" style="position:fixed; top: 20%;left: 25%;">
+        <h1>vælg nogle fokken genre</h1>
         <input type="checkbox" id="horror" name="genre" value="Horror">
-        <label for="genre1"> Gyser</label><br>
+        <label for="genre1"> Horror</label><br><br>
         <input type="checkbox" id="action" name="genre" value="Action">
-        <label for="genre2"> Action</label><br>
+        <label for="genre2"> Action</label><br><br>
         <input type="checkbox" id="comedy" name="genre" value="Comedy">
-        <label for="genre3"> Komedie</label><br>
+        <label for="genre3"> Comedy</label><br><br>
         <input type="checkbox" id="romance" name="genre" value="Romance">
-        <label for="genre4"> Romantik</label><br>
-
+        <label for="genre4"> Romance</label><br><br>
+        <input type="checkbox" id="sci-fi" name="genre" value="Sci-Fi">
+        <label for="genre5"> Sci-Fi</label><br><br>
+        <input type="checkbox" id="fantasy" name="genre" value="Fantasy">
+        <label for="genre6"> Fantasy</label><br><br>
+        <input type="checkbox" id="thriller" name="genre" value="Thriller">
+        <label for="genre7"> Thriller</label><br><br>
+        <input type="checkbox" id="crime" name="genre" value="Crime">
+        <label for="genre8"> Crime</label><br><br>
         
-            <input type="checkbox" id="sci-fi" name="genre" value="Sci-Fi">
-            <label for="genre5"> Sci-Fi</label><br>
-            <input type="checkbox" id="fantasy" name="genre" value="Fantasy">
-            <label for="genre6"> Fantasy</label><br>
-            <input type="checkbox" id="thriller" name="genre" value="Thriller">
-            <label for="genre7"> Thriller</label><br>
-            <input type="checkbox" id="crime" name="genre" value="Crime">
-            <label for="genre8"> Crime</label><br>
-            <input type="checkbox" id="drama" name="genre" value="Drama">
-            <label for="genre9"> Drama</label><br>
-            <input type="checkbox" id="adventure" name="genre" value="Adventure">
-            <label for="genre10"> Adventure</label><br>
-            <input type="checkbox" id="musical" name="genre" value="Musical">
-            <label for="genre11"> Musical</label><br>
-            <input type="checkbox" id="animation" name="genre" value="Animation">
-            <label for="genre12"> Animation</label><br>
-            <input type="checkbox" id="children" name="genre" value="Children">
-            <label for="genre13"> Children</label><br>
-            <input type="checkbox" id="western" name="genre" value="Western">
-            <label for="genre14"> Western</label><br>
-            <input type="checkbox" id="mystery" name="genre" value="Mystery">
-            <label for="genre15"> Mystery</label><br>
-            <input type="checkbox" id="documentary" name="genre" value="Documentary">
-            <label for="genre16"> Documentary</label><br>
     
         <br>
         
         <input type="button" value="Submit" onclick="submit()">
-    
+    </div>
+
+    <div class = "pick_genres2" style="position:fixed; top 20%;left: 40%;">
+        <input type="checkbox" id="drama" name="genre" value="Drama">
+        <label for="genre9"> Drama</label><br><br>
+        <input type="checkbox" id="adventure" name="genre" value="Adventure">
+        <label for="genre10"> Adventure</label><br><br>
+        <input type="checkbox" id="musical" name="genre" value="Musical">
+        <label for="genre11"> Musical</label><br><br>
+        <input type="checkbox" id="animation" name="genre" value="Animation">
+        <label for="genre12"> Animation</label><br><br>
+        <input type="checkbox" id="children" name="genre" value="Children">
+        <label for="genre13"> Children</label><br><br>
+        <input type="checkbox" id="western" name="genre" value="Western">
+        <label for="genre14"> Western</label><br><br>
+        <input type="checkbox" id="mystery" name="genre" value="Mystery">
+        <label for="genre15"> Mystery</label><br><br>
+        <input type="checkbox" id="documentary" name="genre" value="Documentary">
+        <label for="genre16"> Documentary</label><br><br>
+    </div>
+
     <script>
         let socket = io();
 
