@@ -147,31 +147,30 @@ img {
 }
 
 .movie_div {
-  position: fixed;
-  top: 35%;
-  left: 50%;
-  width: 450px;
-  height: 450px;
-  margin-top: -250px;
-  margin-left: -250px;
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    width: 450px;
+    height: 450px;
+    margin-top: -250px;
+    margin-left: -250px;
 }
 
-.pick_genres {
-  color: white;
-	font-family: 'myFont';
-	font-size: 20px;
-  width: 800px;
-  height: 450px;
-  margin-top: -100px;
-  margin-left: -250px;
+.pick_genres_div {
+    position: fixed;
+    width: 800px;
+    height: 450px;
+    top: 35%;
+    left: 50%;
+    color: white;
+    font-family: 'myFont';
+    font-size: 20px;
 }
 
-.pick_genres2 {
-  color: white;
-	font-family: 'myFont';
-	font-size: 20px;
-  width: 450px;
-  height: 450px;
-  margin-top: 147px;
-  margin-left: -250px;
+.pick_genres_column {
+    color: white;
+    font-family: 'myFont';
+    font-size: 20px;
+    width: 450px;
+    height: 450px;
 }
