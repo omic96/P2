@@ -82,19 +82,13 @@ body {
 }
 
 .rating input{
-  position: flex;
   display: none;
-  opacity: 1;
-  height: 25px;
-  width: 25px;
 }
 
 .rating label{
   display: block;
   cursor: pointer;
   width: 1.8vw;
-  font-size: 10vw;
-  font-size: 10vh;  
 }
 
 .rating label:before{
@@ -103,8 +97,6 @@ body {
   position: absolute;
   display: block;
   font-size: 150%;
-  font-size: 3vw;
-  font-size: 3vh;
   color: #ffffff;
   opacity: 0.15;
 }
@@ -115,8 +107,6 @@ body {
   position: none;
   display: block;
   font-size: 150%;
-  font-size: 3vw;
-  font-size: 3vh;
   color: #d8cb13;
   top: 0;
   opacity: 0;
@@ -173,4 +163,18 @@ img {
     font-size: 20px;
     width: 450px;
     height: 450px;
+}
+
+.textnode {
+
+  color: white;
+  font-size: 17px;
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  
 }

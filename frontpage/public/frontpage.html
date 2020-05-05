@@ -68,6 +68,7 @@
 				let movie_title_text = document.createElement("div");
 				let movie_MovieId = document.createElement("div");
 				let star_ratings = document.createElement("div");
+				let textnode = document.createElement("div");
 
 				//loop that creates clickable rating-stars under each movie overlay (used in conjunction with star_label)
 				for(let j = 1; j < 6; j++) {
@@ -88,8 +89,12 @@
 						console.log(curr_movies[i].title);
 						console.log(curr_movies[i].movieId);
 						console.log(star_input.value);
-						//console.log(curr_movies[i].rating);
+						textnode.innerHTML = "You have rated this movie " + star_input.value + "/5 stars";
+						star_ratings.append(textnode);
+						star_ratings.replaceWith(textnode);
+						movie_overlay.append(textnode);
 						socket.emit("et eller andet", curr_movies[i], read_cookie("id"), star_input.value);
+
 					};
 
 					star_ratings.appendChild(star_input);
@@ -103,6 +108,8 @@
 				movie_overlay.appendChild(movie_title_text);
 				movie_overlay.appendChild(star_ratings);
 				movie_overlay.appendChild(movie_MovieId);
+				movie_overlay.append(textnode);
+
 
 				//assigns names under each class.
 				movie_container.className = "movie_container";
@@ -111,6 +118,7 @@
 				movie_image.className = "movie_images";
 				movie_MovieId.className = "id";
 				star_ratings.className = "rating";
+				textnode.className = "textnode";
 				
 
 				movie_title_text.innerHTML = curr_movies[i].title;
