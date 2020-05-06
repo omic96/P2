@@ -59,7 +59,7 @@
 		//puts movies with the correct genre under der correct header, uses data array function to find specific genre
 		 //function that creates our movie thumbnail and adds a overlay on mouse hover that shoves movie name and star rating feature.
 	function create_elements(main_element, i, curr_movies) {
-		
+		if(curr_movies[i] != undefined) {
 				let action_section = document.getElementById(main_element);
 				
 				let movie_container = document.createElement("div");
@@ -130,6 +130,7 @@
 				}else{
 				movie_image.src = "https://cdn.discordapp.com/attachments/674212911996207127/707153026049376286/oracal-651g-intermediate-cal-dark-green-folie-i-63-126-cm-s-bredde.jpg.png";
 				}
+		}
 	}	
 
 	function read_cookie(name) {
