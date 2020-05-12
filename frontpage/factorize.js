@@ -40,67 +40,50 @@ class user_ratings {
   }
 }
 
-//Exports functions to server.js as FactorizeJS
-module.exports = {
-
-movieColumnsServer : 0,
-
-main: function() {
-    // Add all entries
-    add_all_ratings();
-    // Fill all empty entries
-    fill_empty_ratings()
-    this.movieColumnsServer = movieColumns;
-
-    //factorized_matrix = factorize(userMovieMatrix,60,1,0.002,0.002,true,currentUserIndex, false);
-
-    factorized_matrix = math.multiply(saved_factor_matrix1,saved_factor_matrix2);
-    /*
-    for(let i = 0; i < 400;i++) {
-        console.log(factorized_matrix[0][i],userMovieMatrix[0][i]);
-    }
-    */
-
-    for (let entry in movieData) {
-      let movieID = movieData[entry].movieId;
-      let movieTitle = movieData[entry].title;
-      let movieGenres = movieData[entry].genres;
-      let movieImage = movieData[entry].poster_img;
-  
-      movieList[movieID] = {
-        title: movieTitle,
-        genres: movieGenres,
-        image: movieImage
-      };
-    }
-},
-
-find_best_ratings_server : function (user_id) {
-    return find_best_ratings(user_id);
-},
-
-remove_row_from_matrix_a_server : function (user_id) {
-    remove_row_from_matrix_a(user_id);
-},
 
 
-update_users: function() {
-    ratingData = require('./ratings_data.json');
-    add_all_ratings();
-    fill_empty_ratings();
-},
-
-//Factorizes only the specific user
-factorize_new_user: function(the_user_id) {
-    let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,0.002,false,1,true, the_user_id);
-    factorized_matrix[users[the_user_id]] = new_user_matrix[0];
-},
-
-get_user_ratings_server: function(the_user_id) {
-    return get_user_ratings_array_factorized(the_user_id);
+exports.update_users = () => {
+  ratingData = require('./ratings_data.json');
+  add_all_ratings();
+  fill_empty_ratings();
 }
 
-};
+exports.factorize_new_user = (the_user_id) => {
+  let new_user_matrix = factorize(get_user_ratings_array(the_user_id),60,500,0.002,0.002,false,1,true, the_user_id);
+  factorized_matrix[users[the_user_id]] = new_user_matrix[0];
+}
+
+//exports.movieColumnsServer = 0;
+
+exports.main = () => {
+  // Add all entries
+  add_all_ratings();
+  // Fill all empty entries
+  fill_empty_ratings()
+  //movieColumnsServer = movieColumns;
+
+  //factorized_matrix = factorize(userMovieMatrix,60,1,0.002,0.002,true,currentUserIndex, false);
+
+  factorized_matrix = math.multiply(saved_factor_matrix1,saved_factor_matrix2);
+  /*
+  for(let i = 0; i < 400;i++) {
+      console.log(factorized_matrix[0][i],userMovieMatrix[0][i]);
+  }
+  */
+
+  for (let entry in movieData) {
+    let movieID = movieData[entry].movieId;
+    let movieTitle = movieData[entry].title;
+    let movieGenres = movieData[entry].genres;
+    let movieImage = movieData[entry].poster_img;
+
+    movieList[movieID] = {
+      title: movieTitle,
+      genres: movieGenres,
+      image: movieImage
+    };
+  }
+}
 
 // Loads and sends all ratings to be added
 function add_all_ratings() {
@@ -196,7 +179,7 @@ function get_user_ratings_array (user_id) {
 }
 
 //Returns an array with a specfic users rating that has been factorized.
-function get_user_ratings_array_factorized (user_id) {
+exports.get_user_ratings_array_factorized = (user_id) => {
   let currentUserRow = users[user_id];
   let user_array = [[]];
   for(let i =0; i < currentMovieIndex; i++) {
@@ -238,17 +221,17 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
                 let current_value = the_matrix[i][j];
                 //Only if the user rated this movie..
                 if(current_value > 0) {
-                    let error = current_value - math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));
+                    let error = current_value - math.multiply(factor_matrix1[i], exports.column_vector(factor_matrix2,j));
                 
                     //Update each element in the two factor matrix, by using the update_latent_feature function.
                     for(let k = 0; k < latent_features; k++) {
                         let factor_matrix1_latent_feature = factor_matrix1[i][k];
                         let factor_matrix2_latent_feature = factor_matrix2[k][j];
                         
-                        factor_matrix1[i][k] = update_latent_feature(factor_matrix1_latent_feature,factor_matrix2_latent_feature,error,learning_rate,regularization_rate);
+                        factor_matrix1[i][k] = exports.update_latent_feature(factor_matrix1_latent_feature,factor_matrix2_latent_feature,error,learning_rate,regularization_rate);
                         
                         if(!new_user) {
-                          factor_matrix2[k][j] = update_latent_feature(factor_matrix2_latent_feature,factor_matrix1_latent_feature,error,learning_rate,regularization_rate);
+                          factor_matrix2[k][j] = exports.update_latent_feature(factor_matrix2_latent_feature,factor_matrix1_latent_feature,error,learning_rate,regularization_rate);
                         }
                     }
                 }
@@ -281,21 +264,21 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
 
 
     //print out the final total error
-    console.log(find_rmse(the_matrix,factor_matrix1,factor_matrix2, user_count));
+    console.log(exports.find_rmse(the_matrix,factor_matrix1,factor_matrix2, user_count));
     
     //Return the new matrix, A * B.
     return math.multiply(factor_matrix1,factor_matrix2);
 }
 
 // Updates the number is our matrices, moving us hopefully moving us closer to our true values from our target matrix
-function update_latent_feature(latent1, latent2, error, learning_rate, regularization_rate) {
+exports.update_latent_feature = (latent1, latent2, error, learning_rate, regularization_rate) => {
   //The formula from latex, in the matrix factorization section
     //return latent1 + 2 * learning_rate * error * latent2;
     
     return latent1 + learning_rate * (2 * error * latent2 - regularization_rate * latent1);
 }
 
-function remove_row_from_matrix_a (user_id) {
+exports.remove_row_from_matrix_a = (user_id) => {
     saved_factor_matrix1.splice(users[user_id],1);
     fs.writeFile("FactorizedMatrixA.json", JSON.stringify(saved_factor_matrix1, null, 4), function (err) {
       if (err) throw err;
@@ -304,7 +287,7 @@ function remove_row_from_matrix_a (user_id) {
 }
 
 //Provides us with the column needed to multiply 
-function column_vector(matrix, index) {
+exports.column_vector = (matrix, index) => {
     return matrix.map(m => m[index]); 
 }
 
@@ -323,7 +306,7 @@ function make_factor_matrix (latent_features, count) {
 }
 
 //Finds the Root Mean Square Error, which tells us how far our matrix is to the target matrix
-function find_rmse (the_matrix, factor_matrix1, factor_matrix2, user_count) {
+exports.find_rmse = (the_matrix, factor_matrix1, factor_matrix2, user_count) => {
 
     let total_error = 0;
     for(let i = 0; i < user_count; i++) {
@@ -331,7 +314,7 @@ function find_rmse (the_matrix, factor_matrix1, factor_matrix2, user_count) {
             let y = the_matrix[i][j];
             //Only if the user rated this movie..
             if(y > 0) {
-                let y1 = math.multiply(factor_matrix1[i], column_vector(factor_matrix2,j));        
+                let y1 = math.multiply(factor_matrix1[i], exports.column_vector(factor_matrix2,j));        
                 total_error += Math.sqrt((Math.pow(y1 - y,2)));
             }
         }
@@ -340,7 +323,7 @@ function find_rmse (the_matrix, factor_matrix1, factor_matrix2, user_count) {
 }
 
 
-function find_best_ratings (user_id) {
+exports.find_best_ratings = (user_id) => {
     let currentUserRow = users[user_id];
     let topRatings = [];
 

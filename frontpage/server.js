@@ -12,7 +12,7 @@ let movieList = require('./data_2.json');
 let movie_list_result = movieList;
 
 //Selected function exported from factorize.js
-let factorizeJS = require('./factorize.js');
+let {main, factorize_new_user, update_users, get_user_ratings_array_factorized,remove_row_from_matrix_a, find_best_ratings, } = require('./factorize.js');
 
 //MongoDb
 const { MongoClient, ObjectID } = require('mongodb');
@@ -30,7 +30,7 @@ server.listen(80, function () {
 });
 
 //Updates and factorizes the UserMovieMatrix upon server start
-factorizeJS.main();
+main();
 
 
 let request = require("request");
@@ -175,8 +175,8 @@ function user_rates_movies(user_id, movies_to_rate){
     });
     
     //Updates and factorizes the user
-    factorizeJS.update_users();
-    factorizeJS.factorize_new_user(user_id);
+    update_users();
+    factorize_new_user(user_id);
 }
 
 //User Login
@@ -190,10 +190,13 @@ function login_user(name1, pass1, id) {
             if(result != "") {
                 io.sockets.connected[id].emit('login success', result[0].first_time_logged_in, result[0]._id);
                 console.log(name1 + " loggede ind!");
+                db.close();
+                return (name1 + " loggede ind!");
             }else{
                 io.sockets.connected[id].emit('login failed');
+                db.close();
+                return 'login failed';
             }
-            db.close();
         });
     });
 }
@@ -240,7 +243,7 @@ function update_user_logged_in(id, set) {
 function reset_user (id) {
     let ratings_data_file = require('./ratings_data.json');
     //Remove the users row in Matrix A
-    factorizeJS.remove_row_from_matrix_a_server(id);
+    remove_row_from_matrix_a(id);
     console.log(ratings_data_file.length);
 
     //Remove all ratings from ratings_data.json
@@ -283,9 +286,9 @@ function get_user_data(user_id, socket_id) {
         id : user_id,
         name: "",
         liked_genres: [],
-        ratings : factorizeJS.get_user_ratings_server(user_id),
-        movieColumns : factorizeJS.movieColumnsServer,
-        movies : factorizeJS.find_best_ratings_server(user_id)
+        ratings : get_user_ratings_array_factorized(user_id),
+        //movieColumns : factorizeJS.movieColumnsServer,
+        movies : find_best_ratings(user_id)
     };
 
     MongoClient.connect(url, function (err, db) {
