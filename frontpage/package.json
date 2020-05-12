@@ -17,5 +17,8 @@
     "node-fetch": "^2.6.0",
     "request": "^2.88.2",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1"
   }
 }
