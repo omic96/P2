@@ -46,21 +46,21 @@
 
             
             function login () {
-                let userinfo = {
+                let user_info = {
                     name : document.getElementById("username_login").value,
                     pass : document.getElementById("password_login").value
                 }
 
-                socket.emit('login',userinfo);
+                socket.emit('login',user_info);
             }
 
 
             function register() {
-                let userinfo = {
+                let user_info = {
                     name : document.getElementById("username_register").value,
                     pass : document.getElementById("password_register").value
                 }
-                socket.emit('register', userinfo)
+                socket.emit('register', user_info)
             }
         </script>
 

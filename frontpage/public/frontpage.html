@@ -60,7 +60,7 @@
 		 //function that creates our movie thumbnail and adds a overlay on mouse hover that shoves movie name and star rating feature.
 	function create_elements(main_element, i, curr_movies) {
 		if(curr_movies[i] != undefined) {
-				let action_section = document.getElementById(main_element);
+				let category_section = document.getElementById(main_element);
 				
 				let movie_container = document.createElement("div");
 				let movie_image = document.createElement("img");
@@ -93,7 +93,7 @@
 						star_ratings.append(textnode);
 						star_ratings.replaceWith(textnode);
 						movie_overlay.append(textnode);
-						socket.emit("et eller andet", curr_movies[i], read_cookie("id"), star_input.value);
+						socket.emit("rating movie on frontpage", curr_movies[i], read_cookie("id"), star_input.value);
 
 					};
 
@@ -101,8 +101,8 @@
 					star_ratings.appendChild(star_label);
 				}
 
-				//
-				action_section.appendChild(movie_container);
+                //
+				category_section.appendChild(movie_container);
 				movie_container.appendChild(movie_overlay);
 				movie_container.appendChild(movie_image);
 				movie_overlay.appendChild(movie_title_text);
@@ -172,7 +172,7 @@
 		}
 	}
 
-	function sort_movies_by_genres_and_ratings (genre) {
+	function sort_movies_by_genres_and_ratings(genre) {
 		let new_movie_array = [];
 		
 		for(let i = 0; i < all_movies.length; i++) {

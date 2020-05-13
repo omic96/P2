@@ -38,16 +38,12 @@
     
             </center>
         </div>
-        
-
-         
-      
     </div>
 
     <script>
 
         let socket = io();
-        socket.emit("get movielist");
+        socket.emit("get movie_list");
 
         let all_movies;
         let all_rated_moives = [];
@@ -55,9 +51,9 @@
         let curr_movie = 0;
         let rated_movies = 0;
         
-        socket.on("send movielist", function(movielist) {
-            console.log(movielist);
-            all_movies = movielist;
+        socket.on("send movie_list", function(movie_list) {
+            console.log(movie_list);
+            all_movies = movie_list;
             insert_movie(curr_movie);
             // rate_movie(movielist);
         });
@@ -83,56 +79,16 @@
             }
         }
 
-       /* function rate_movie2(movies_to_rate){
-            let rating = 0; 
-            
-            for (let index = 0; index < movies_to_rate.length; index++) {
-                console.log(movies_to_rate[index].title);
-                //movies_to_rate[index].rating 
-                rating = prompt("Rate "+ movies_to_rate[index].title + " from 1-5");  //tilføjer rating til objekterne 
-
-                //input control 
-                while(isNaN(rating) || rating > 5 || rating < 1){
-                        rating = prompt(rating + " is not between 1-5. Please try to rate "+ movies_to_rate[index].title + " from 1-5");
-                    }
-                
-                    movies_to_rate[index].rating = rating;
-            }
-        } */
-
         function insert_movie(movie_index) {
             
             if(!check_if_movie_exist(all_rated_moives,all_movies[movie_index].title) && !check_if_movie_exist(dont_know_movies,all_movies[movie_index].title)) {
 
                 document.getElementById("headline").innerHTML = all_movies[movie_index].title;
                 document.getElementById("poster_img").src = all_movies[movie_index].image;
-                console.log(all_movies[movie_index]); 
             }else{
                 curr_movie++;
                 insert_movie(curr_movie);
             }
-            
-            
-            
-            
-            /*/
-            if ((!(all_rated_moives.includes(all_movies[movie_index])))){
-                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
-                document.getElementById("poster_img").src = all_movies[movie_index].image;
-
-            else if (!(dont_know_movies.includes(all_movies[movie_index]))){
-                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
-                document.getElementById("poster_img").src = all_movies[movie_index].image;
-                console.log(all_movies[movie_index]);
-            }
-            else {
-                movie_index++;
-                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
-                document.getElementById("poster_img").src = all_movies[movie_index].image;
-                console.log(all_movies[movie_index]);
-            }
-
-            /*/
             
         }
         

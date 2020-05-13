@@ -1,4 +1,4 @@
-let express = require('express');
+ let express = require('express');
 let http = require('http');
 let path = require('path');
 let socketIO = require('socket.io'); 
@@ -8,11 +8,12 @@ let io = socketIO(server); app.set('port', 80);
 let fetch = require("node-fetch");
 let fs = require("fs");
 
-let movieList = require('./data_2.json');
-let movie_list_result = movieList;
+let movie_list = require('./data_2.json');
+let movie_list_result = movie_list;
 
 //Selected function exported from factorize.js
 let {main, factorize_new_user, update_users, get_user_ratings_array_factorized,remove_row_from_matrix_a, find_best_ratings, } = require('./factorize.js');
+
 
 //MongoDb
 const { MongoClient, ObjectID } = require('mongodb');
@@ -29,20 +30,20 @@ server.listen(80, function () {
     console.log('Starting server on port 80');
 });
 
-//Updates and factorizes the UserMovieMatrix upon server start
+//Updates the User_movie_matrix upon server start
 main();
 
-
-let request = require("request");
 let user_genre; 
 
 //Display thumbnails
 let movie_name_array = [];
 
-
+//This is called when a user visits the site. The server is then listening for incoming sockets
 io.on('connection', function (socket) {
 
-	socket.on("register", function(data) {
+    //When server recives a socket, call some function...
+
+    socket.on("register", function(data) {
         register_user(data.name, data.pass,socket.id);
 	});
 	
@@ -54,8 +55,8 @@ io.on('connection', function (socket) {
         user_genre = genres;
     });
 
-    socket.on("get movielist" , function() {
-        io.sockets.connected[socket.id].emit('send movielist', find_movies(user_genre,movieList));
+    socket.on("get movie_list" , function() {
+        io.sockets.connected[socket.id].emit('send movie_list', find_movies(user_genre,movie_list));
     });
 
     socket.on("send rated movies", function(rated_movies, user_id) {
@@ -68,7 +69,7 @@ io.on('connection', function (socket) {
         get_user_data(user_id, socket.id);
     });
 
-    socket.on("et eller andet", function(movies_to_rate, user_id, star_rating) {
+    socket.on("rating movie on frontpage", function(movies_to_rate, user_id, star_rating) {
         movies_to_rate.rating = star_rating;
         user_rates_movies(user_id, movies_to_rate);
     });
@@ -79,66 +80,30 @@ io.on('connection', function (socket) {
     
 });
 
-function find_movies(user_genre, movieList){
+function find_movies(user_genre, movie_list){
     let same_genre_movies = []; 
     let movies_to_rate = [];
 
-    // finde film med de genre brugeren kan lide 
-    /*/
-    for (let i = 0; i < movieList.length; i++) {
-        
-        let current_movie_genre = movieList[i].genres.split("|"); //genrene i filmen findes
-        console.log(user_genre);
-         //vi vælger film der har antal genre brugeren har valgt -1 (for mere variation)
-         if (user_genre.length === undefined) {
-             if (compare(user_genre, current_movie_genre).length === undefined) {  
-                same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film i
-             }
-        }
-         else {
-            if (compare(user_genre, current_movie_genre).length === user_genre.length - 1) {
-                same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id
+    // Find movies with genres that the user liked
+    for(let i = 0; i < user_genre.length; i++) {
+        if(user_genre[i].liked == 1) {
+            for(let j = 0; j < movie_list.length; j++) {
+                if(movie_list[j].genres.includes(user_genre[i].name)) {
+                    same_genre_movies.push({id: movie_list[j].movieId, title: movie_list[j].title, genre: movie_list[j].genres, image: movie_list[j].poster_img}); 
+                }
             }
-         }
-
         }
-    /*/
-         for(let i = 0; i < user_genre.length; i++) {
-             if(user_genre[i].liked == 1) {
-                 for(let j = 0; j < movieList.length; j++) {
-                     if(movieList[j].genres.includes(user_genre[i].name)) {
-                        same_genre_movies.push({id: movieList[j].movieId, title: movieList[j].title, genre: movieList[j].genres, image: movieList[j].poster_img}); //array med film id
-                     }
-                 }
-             }
-         }
-
-         /* if (compare(user_genre, current_movie_genre).length === ((user_genre.length > 1) ? (user_genre.length - 1) : user_genre.length)) {  
-            same_genre_movies.push({id: movieList[i].movieId, title: movieList[i].title, genre: movieList[i].genres, image: movieList[i].poster_img}); //array med film id */
+    }
     
-    //vælger 10 random film fra same_genre_movies og sætter dem ind i movies_to_rate
-    console.log(same_genre_movies.length);
+    //Picks 250 random movies from the same_genre_movies array
     for (let i = 0; i < 250; i++) {
         movies_to_rate[i] = same_genre_movies[Math.floor(Math.random() * same_genre_movies.length)] ; 
     }
-
-    //console.log(movies_to_rate);
     return movies_to_rate;
 }
 
-//ser hvor mange ens genre der er, returnerer et array med dem
-function compare(user_genre_array, movie_genre_array){
-    let finalarray = []; 
-    user_genre_array.forEach((user_genre)=>movie_genre_array.forEach((movie_genre)=>{
-        if(user_genre.name === movie_genre){ 
-            finalarray.push(user_genre);
-        }
-    })); 
-    return finalarray; 
-}
 
-
-//funktion der laver objekter med movie ratings til bestemt user 
+//Makes objects that exist of movie ratings for a specific user
 function user_rates_movies(user_id, movies_to_rate){ 
     
     let user_rating = [];
@@ -146,15 +111,15 @@ function user_rates_movies(user_id, movies_to_rate){
 
     //Sorts and transforms the data into the correct format
     for (let i = 0; i < movies_to_rate.length; i++) {
-       user_rating[i] = {userId: user_id, movieId : movies_to_rate[i].id, rating : movies_to_rate[i].rating, timestamp : "00"}; //nyt objekt
+       user_rating[i] = {userId: user_id, movieId : movies_to_rate[i].id, rating : movies_to_rate[i].rating, timestamp : "00"}; 
        ratings_data_file.push(user_rating[i]);
     } 
 
     //If movies_to_rate is 1
     if(movies_to_rate.length === undefined){
-        user_rating = {userId: user_id, movieId : movies_to_rate.movieId, rating : movies_to_rate.rating, timestamp : "00"}; //nyt objekt
+        user_rating = {userId: user_id, movieId : movies_to_rate.movieId, rating : movies_to_rate.rating, timestamp : "00"}; 
 
-        //Check if rating already exist
+        //Check if rating already exist. The first 100800 ratings are from the dataset, so there is no need to look through these ratings.
         let already_exist = 0;
         for(let i = 100800; i < ratings_data_file.length; i++) {
             if(ratings_data_file[i].movieId == movies_to_rate.movieId && ratings_data_file[i].userId == user_id) {
@@ -168,34 +133,39 @@ function user_rates_movies(user_id, movies_to_rate){
             ratings_data_file.push(user_rating);
         }
     }
+
     //Writes the data into a JSON file
     fs.writeFile("./ratings_data.json", JSON.stringify(ratings_data_file, null, 4), function (err) {
         if (err) throw err;
         console.log('ratings_data.json updated');
     });
     
-    //Updates and factorizes the user
+    //Updates and factorizes the user. These functions come from factorize.js
     update_users();
     factorize_new_user(user_id);
 }
 
 //User Login
 function login_user(name1, pass1, id) {
+
+    //connect to MongoDB
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
+        //Specify which database
         let dbo = db.db("MovieRecommender");
+        //Looking for object where name = name1 and password = pass1
         let query = { name: name1, password: pass1};
         dbo.collection("Users").find(query).toArray(function (err, result) {
             if (err) throw err;
+
+            //If an object with the query exist:
             if(result != "") {
                 io.sockets.connected[id].emit('login success', result[0].first_time_logged_in, result[0]._id);
                 console.log(name1 + " loggede ind!");
                 db.close();
-                return (name1 + " loggede ind!");
             }else{
                 io.sockets.connected[id].emit('login failed');
                 db.close();
-                return 'login failed';
             }
         });
     });
@@ -204,11 +174,15 @@ function login_user(name1, pass1, id) {
 
 //User registration
 function register_user(name1, pass1, id) {
+    
+    //connect to mongodb
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         let dbo = db.db("MovieRecommender");
+        //Create the object that we want to inster into the database
         let myobj = { name: name1, password: pass1, first_time_logged_in: true, liked_genres: [] };
 
+        //Check if there already is an object with that name.
         let query = {name: name1};
         dbo.collection("Users").find(query).toArray(function(err,result) {
             if(result == "") {
@@ -225,7 +199,7 @@ function register_user(name1, pass1, id) {
     });
 }
 
-//To check if user has done a first time login
+//Update the first_time_logged_in boolean in the database
 function update_user_logged_in(id, set) {
     MongoClient.connect(url, function (err, db) {
         if(err) throw err;
@@ -242,9 +216,8 @@ function update_user_logged_in(id, set) {
 
 function reset_user (id) {
     let ratings_data_file = require('./ratings_data.json');
-    //Remove the users row in Matrix A
+    //Remove the users row in Matrix A (This function comes from factorize.js)
     remove_row_from_matrix_a(id);
-    console.log(ratings_data_file.length);
 
     //Remove all ratings from ratings_data.json
     for(let i = 100800; i < ratings_data_file.length; i++) {
@@ -254,7 +227,6 @@ function reset_user (id) {
         }
     }
 
-    console.log(ratings_data_file.length);
     fs.writeFile("./ratings_data.json", JSON.stringify(ratings_data_file, null, 4), function (err) {
         if (err) throw err;
         console.log('ratings_data.json updated');
@@ -280,6 +252,7 @@ function update_users_liked_genres(id, user_genre){
 }
 
 
+//Send the data from a specific user.
 function get_user_data(user_id, socket_id) {
 
     let user_data = {
@@ -287,10 +260,11 @@ function get_user_data(user_id, socket_id) {
         name: "",
         liked_genres: [],
         ratings : get_user_ratings_array_factorized(user_id),
-        //movieColumns : factorizeJS.movieColumnsServer,
         movies : find_best_ratings(user_id)
     };
 
+
+    //Read name and liked_genres from database, and then send the user_data object.
     MongoClient.connect(url, function (err, db) {
         if(err) throw err;
         let dbo = db.db("MovieRecommender");
@@ -311,13 +285,15 @@ function get_user_data(user_id, socket_id) {
 }
 
 
-function get_thumpnails (i_start, i_end) {
+function get_thumbnails (i_start, i_end) {
 
     for(let i = 0; i < movie_list_result.length; i++) {
         if(movie_list_result[i].poster_img == undefined) {
-        let array1 = movie_list_result[i].title.split(/[()]+/).filter(function(e) { return e; });
+
+            let array1 = movie_list_result[i].title.split(/[()]+/).filter(function(e) { return e; });
             let array2 = array1[0].split(/[,]+/).filter(function(e) { return e; });
             array2.push(array1[1]);
+
             let url = "http://api.themoviedb.org/3/search/movie?query=" + array2[0] + "&primary_release_year=" + array2[array2.length] + "&api_key=57d96d1905c6461a590da9ca31df2506";
             
             fetch(url)
@@ -333,8 +309,8 @@ function get_thumpnails (i_start, i_end) {
             });
 
             movie_name_array.push(movie_list_result[i]);
+        }
     }
-}
     setTimeout(() => {
         fs.writeFile("./data_2.json", JSON.stringify(movie_list_result, null, 4), function (err) {
             if (err) throw err;
