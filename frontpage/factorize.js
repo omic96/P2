@@ -208,9 +208,9 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
     }
 
     else {
-        factor_matrix_A = make_factor_matrix(latent_features, user_count);
+        factor_matrix_A = exports.make_factor_matrix(latent_features, user_count);
         if (!new_user) {
-            factor_matrix_B = math.transpose(make_factor_matrix(latent_features, current_movie_index));
+            factor_matrix_B = math.transpose(exports.make_factor_matrix(latent_features, current_movie_index));
         } else {
             factor_matrix_B = saved_factor_matrix_B;
         }
@@ -267,7 +267,7 @@ function factorize(the_matrix, latent_features, iterations, learning_rate, regul
 
 
     //print out the final total error
-    console.log(exports.find_rmse(the_matrix, factor_matrix_A, factor_matrix_B, user_count));
+    console.log(exports.find_rmse(the_matrix, factor_matrix_A, factor_matrix_B, user_count, current_movie_index));
 
     //Return the new matrix, A * B.
     return math.multiply(factor_matrix_A, factor_matrix_B);
@@ -295,7 +295,7 @@ exports.column_vector = (matrix, index) => {
 }
 
 //Generates the two factor matrices filled with random numbers to calculate on.
-function make_factor_matrix(latent_features, count) {
+exports.make_factor_matrix = (latent_features, count) => {
 
     let factor_matrix = [];
     for (let i = 0; i < count; i++) {
@@ -309,11 +309,11 @@ function make_factor_matrix(latent_features, count) {
 }
 
 //Finds the Root Mean Square Error, which tells us how far our matrix is to the target matrix
-exports.find_rmse = (the_matrix, factor_matrix1, factor_matrix2, user_count) => {
+exports.find_rmse = (the_matrix, factor_matrix1, factor_matrix2, user_count, movie_count) => {
 
     let total_error = 0;
     for (let i = 0; i < user_count; i++) {
-        for (let j = 0; j < current_movie_index; j++) {
+        for (let j = 0; j < movie_count; j++) {
             let y = the_matrix[i][j];
             //Only if the user rated this movie..
             if (y > 0) {

@@ -104,7 +104,7 @@ function find_movies(user_genre, movie_list){
 
 
 //Makes objects that exist of movie ratings for a specific user
-function user_rates_movies(user_id, movies_to_rate){ 
+function user_rates_movies(user_id, movies_to_rate){    
     
     let user_rating = [];
     let ratings_data_file = require('./ratings_data.json'); //ratings_data_file skal erstattes, skal være anden variabel end moiveRatings, fordi den skal hentes hver gang den køres
