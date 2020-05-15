@@ -23,18 +23,18 @@
             <br><br>
             <div class="rating" style="position:relative; top: 0%;left: 20%;">
                 <input type="radio" name="star">
-                <label onclick="rate_movie('5')"></label>
+                <label onclick="rate_movie('5')" id="5" value="5"></label>
                 <input type="radio" name="star">
-                <label onclick="rate_movie('4')"></label>
+                <label onclick="rate_movie('4')" id="4" value="4"></label>
                 <input type="radio" name="star">
-                <label onclick="rate_movie('3')" ></label>
+                <label onclick="rate_movie('3')" id="3" value="3" ></label>
                 <input type="radio" name="star">
-                <label onclick="rate_movie('2')"></label>
+                <label onclick="rate_movie('2')" id="2" value="2"></label>
                 <input type="radio" name="star">
-                <label onclick="rate_movie('1')"></label>
+                <label onclick="rate_movie('1')" id="1" value="1"></label>
             </div>
             <center>
-                <input type="button" value="I haven't seen this movie" onclick="dont_know_rating()">
+                <input type="button" value="0" id="0" onclick="dont_know_rating()">
     
             </center>
         </div>
