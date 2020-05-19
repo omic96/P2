@@ -33,15 +33,15 @@
             });
 
             socket.on('login failed', function(){
-                alert("Forkert brugernavn eller kodeord");
+                alert("Incorrect username or password!");
             });
 
             socket.on('register success', function() {
-                alert("Din bruger blev oprettet!");
+                alert("Your user has been created!");
             });
 
             socket.on('register failed', function() {
-                alert("Det brugernavn er allerede taget!");
+                alert("This username is already taken!");
             });
 
             

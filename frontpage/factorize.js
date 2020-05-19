@@ -331,8 +331,6 @@ exports.find_best_ratings = (user_id) => {
     let topRatings = [];
 
     for (let i = 0; i < current_movie_index; i++) {
-        if (factorized_matrix[current_user_row][i] >= 4) {
-
 
             let movie_obj = {
                 movieId: movie_columns[i],
@@ -344,7 +342,6 @@ exports.find_best_ratings = (user_id) => {
 
             topRatings.push(movie_obj);
         }
-    }
 
     return topRatings;
 }
