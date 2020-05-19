@@ -25,18 +25,21 @@ app.get('/', function (request, response) {
     response.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
+//Display thumbnails
+let movie_name_array = [];
 // Starts the server.
 server.listen(80, function () {
     console.log('Starting server on port 80');
 });
+
+
 
 //Updates the User_movie_matrix upon server start
 main();
 
 let user_genre; 
 
-//Display thumbnails
-let movie_name_array = [];
+
 
 //This is called when a user visits the site. The server is then listening for incoming sockets
 io.on('connection', function (socket) {
@@ -287,15 +290,21 @@ function get_user_data(user_id, socket_id) {
 
 function get_thumbnails (i_start, i_end) {
 
-    for(let i = 0; i < movie_list_result.length; i++) {
+    for(let i = i_start; i < i_end; i++) {
         if(movie_list_result[i].poster_img == undefined) {
-
-            let array1 = movie_list_result[i].title.split(/[()]+/).filter(function(e) { return e; });
-            let array2 = array1[0].split(/[,]+/).filter(function(e) { return e; });
-            array2.push(array1[1]);
-
-            let url = "http://api.themoviedb.org/3/search/movie?query=" + array2[0] + "&primary_release_year=" + array2[array2.length] + "&api_key=57d96d1905c6461a590da9ca31df2506";
             
+            let array1 = movie_list_result[i].title.split(/[()]+/);
+            let array2;
+            let url;
+            console.log(array1[1]);
+            if(array1[0].includes(", The") || array1[0].includes(", An") || array1[0].includes(", A")) {
+                array2 = array1[0].split(',');
+                url = "http://api.themoviedb.org/3/search/movie?query=" + array2[1] + " " + array2[0] + "&primary_release_year=" + array1[array1.length - 2] + "&api_key=57d96d1905c6461a590da9ca31df2506";
+            }else{
+                url = "http://api.themoviedb.org/3/search/movie?query=" + array1[0] + "&primary_release_year=" + array1[array1.length - 2] + "&api_key=57d96d1905c6461a590da9ca31df2506";
+            }
+
+            console.log(url);
             fetch(url)
             .then((response) => {
                 return response.json();
@@ -314,7 +323,7 @@ function get_thumbnails (i_start, i_end) {
     setTimeout(() => {
         fs.writeFile("./data_2.json", JSON.stringify(movie_list_result, null, 4), function (err) {
             if (err) throw err;
-            console.log('ratings_data.json updated');
+            console.log('inserted thumpnails ');
         });
     }, 60000);
 }

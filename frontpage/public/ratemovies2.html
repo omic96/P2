@@ -13,11 +13,9 @@
 <body>
     
     <div id="movie" class="movie_div">
-        
+        <h2 id="headline" class="genres_text">Titel</h2>
         <div id="image_div" class="image_div">
-            <center>
-                <h2 id="headline" class="genres_text" maxlength="10">Titel</h2>
-            </center>
+            
             <img class="image_div" src="https://inges-kattehjem.dk/wp-content/uploads/2019/12/kattensomvoksen-1024x768.jpg" id="poster_img">
 
             <br><br>
@@ -34,7 +32,7 @@
                 <label onclick="rate_movie('1')" id="1" value="1"></label>
             </div>
             <center>
-                <input type="button" value="0" id="0" onclick="dont_know_rating()" class="bigButton">
+                <input type="button" value="Haven't seen this movie" id="0" onclick="dont_know_rating()">
     
             </center>
         </div>
