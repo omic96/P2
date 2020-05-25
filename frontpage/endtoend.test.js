@@ -4,7 +4,7 @@ test('Test for login', async () => {
     //Makes the dummy browser from which the E2E tests are being made in. 
     const browser = await puppeteer.launch({
         headless: false, //Tells the program to run the test in a browser window
-        slowMo: 20, //Tells the program to enter the input slower, giving us a chance to see what happens
+        slowMo: 80, //Tells the program to enter the input slower, giving us a chance to see what happens
         args: ['--window-size=1920,1080'] //The browser window size
     });
     const page = await browser.newPage();
@@ -17,21 +17,21 @@ test('Test for login', async () => {
 
     
    
-    for(let i = 0; i < 100; i++) {
+    for(let i = 0; i < 2; i++) {
         await page.goto('http://127.0.0.1');
 
         let mulleNumber = Math.random();
 
         console.log("Creating account");
         await page.click('input#username_register');
-        await page.type('input#username_register', "Mulle" + mulleNumber)
+        await page.type('input#username_register', 'testuser' + mulleNumber)
         await page.click('input#password_register');
         await page.type('input#password_register', '1234');
         await page.click('input#register_button');
 
         console.log("Logging in");
         await page.click('input#username_login');
-        await page.type('input#username_login', 'Mulle' + mulleNumber);
+        await page.type('input#username_login', 'testuser' + mulleNumber);
         await page.click('input#password_login');
         await page.type('input#password_login', '1234');
         await page.click('input#loign_button');
