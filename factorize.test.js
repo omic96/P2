@@ -26,5 +26,5 @@ test('Should calculate the total error', () => {
     const factor_matrix_A = [[2,1],[4,5],[1,3],[5,4]];
     const factor_matrix_B = [[4,2,3,1],[5,4,3,1]];
     const rmse = find_rmse(matrix, factor_matrix_A, factor_matrix_B, 4, 4);
-    expect(rmse).toStrictEqual(233);
+    expect(rmse).toStrictEqual(14.5625);
 });
