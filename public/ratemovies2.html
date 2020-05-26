@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Rate These Movies</title>
+    <meta charset="UTF-8">
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/mainStyleSheet.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    
+    <div id="movie" class="movie_div">
+        <h2 id="headline" class="genres_text">Titel</h2>
+        <div id="image_div" class="image_div">
+            
+            <img class="image_div" src="https://inges-kattehjem.dk/wp-content/uploads/2019/12/kattensomvoksen-1024x768.jpg" id="poster_img">
+
+            <br><br>
+            <div class="rating" style="position:relative; top: 0%;left: 20%;">
+                <input type="radio" name="star">
+                <label onclick="rate_movie('5')" id="5" value="5"></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('4')" id="4" value="4"></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('3')" id="3" value="3" ></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('2')" id="2" value="2"></label>
+                <input type="radio" name="star">
+                <label onclick="rate_movie('1')" id="1" value="1"></label>
+            </div>
+            <center>
+                <input type="button" value="Haven't seen this movie" id="0" onclick="dont_know_rating()">
+    
+            </center>
+        </div>
+    </div>
+
+    <script>
+
+        let socket = io();
+        socket.emit("get movie_list");
+
+        let all_movies;
+        let all_rated_moives = [];
+        let dont_know_movies =[];
+        let curr_movie = 0;
+        let rated_movies = 0;
+        
+        socket.on("send movie_list", function(movie_list) {
+            console.log(movie_list);
+            all_movies = movie_list;
+            insert_movie(curr_movie);
+            // rate_movie(movielist);
+        });
+
+        console.log(read_cookie("id"));
+
+        function dont_know_rating () {
+            dont_know_movies.push(all_movies[curr_movie]);
+            curr_movie++;
+            insert_movie(curr_movie);
+        }
+
+        function rate_movie(rating) {
+            all_movies[curr_movie].rating = rating;
+            all_rated_moives.push(all_movies[curr_movie]);
+            curr_movie++;
+            rated_movies++;
+            if(rated_movies != 10) { 
+                insert_movie(curr_movie);
+            }else{
+                socket.emit("send rated movies", all_rated_moives, read_cookie("id"));
+                location.href="frontpage.html";
+            }
+        }
+
+        function insert_movie(movie_index) {
+            
+            if(!check_if_movie_exist(all_rated_moives,all_movies[movie_index].title) && !check_if_movie_exist(dont_know_movies,all_movies[movie_index].title)) {
+
+                document.getElementById("headline").innerHTML = all_movies[movie_index].title;
+                document.getElementById("poster_img").src = all_movies[movie_index].image;
+            }else{
+                curr_movie++;
+                insert_movie(curr_movie);
+            }
+            
+        }
+        
+        function check_if_movie_exist (array, title) {
+            for(let i = 0; i < array.length; i++) {
+                if(array[i].title == title) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function read_cookie(name) {
+            let value = "; " + document.cookie;
+            let parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift(); 
+        }
+    </script>
+</body>
+</html>

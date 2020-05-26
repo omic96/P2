@@ -1,0 +1,82 @@
+<html>
+
+<head>
+    <title>User Setup</title>
+    <meta charset="UTF-8">
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/mainStyleSheet.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="pick_genres_div" style="position: fixed; top: 5%; left: 5%;">
+        <h1>Please choose one or more movie genres</h1>
+        <!-- asks the user to select genres --> 
+        <div class="pick_genres_column">
+            <input type="checkbox" id="horror" name="genre" value="Horror">
+            <label for="genre1"> Horror</label><br><br>
+            <input type="checkbox" id="action" name="genre" value="Action">
+            <label for="genre2"> Action</label><br><br>
+            <input type="checkbox" id="comedy" name="genre" value="Comedy">
+            <label for="genre3"> Comedy</label><br><br>
+            <input type="checkbox" id="romance" name="genre" value="Romance">
+            <label for="genre4"> Romance</label><br><br>
+            <input type="checkbox" id="sci-fi" name="genre" value="Sci-Fi">
+            <label for="genre5"> Sci-Fi</label><br><br>
+            <input type="checkbox" id="fantasy" name="genre" value="Fantasy">
+            <label for="genre6"> Fantasy</label><br><br>
+            <input type="checkbox" id="thriller" name="genre" value="Thriller">
+            <label for="genre7"> Thriller</label><br><br>
+            <input type="checkbox" id="crime" name="genre" value="Crime">
+            <label for="genre8"> Crime</label><br><br>
+            
+            <br><br>
+            <input type="button" id="Submit" value="Submit" onclick="submit()">
+        </div>
+        
+        <div class = "pick_genres_column" style="position: relative; bottom: 100%; left: 30%;">
+            
+            <input type="checkbox" id="drama" name="genre" value="Drama">
+            <label for="genre9"> Drama</label><br><br>
+            <input type="checkbox" id="adventure" name="genre" value="Adventure">
+            <label for="genre10"> Adventure</label><br><br>
+            <input type="checkbox" id="musical" name="genre" value="Musical">
+            <label for="genre11"> Musical</label><br><br>
+            <input type="checkbox" id="animation" name="genre" value="Animation">
+            <label for="genre12"> Animation</label><br><br>
+            <input type="checkbox" id="children" name="genre" value="Children">
+            <label for="genre13"> Children</label><br><br>
+            <input type="checkbox" id="western" name="genre" value="Western">
+            <label for="genre14"> Western</label><br><br>
+            <input type="checkbox" id="mystery" name="genre" value="Mystery">
+            <label for="genre15"> Mystery</label><br><br>
+            <input type="checkbox" id="documentary" name="genre" value="Documentary">
+            <label for="genre16"> Documentary</label><br><br>
+        </div>
+    </div>
+        
+        <script>
+            let socket = io();
+            
+            function submit() {
+                
+            let checkbox = document.getElementsByName("genre");
+            let array_of_genres = [];
+
+            for(let i = 0; i < checkbox.length; i++) {
+                let obj = {
+                    name : checkbox[i].value,
+                    liked : 0
+                }
+                if(checkbox[i].checked) {
+                    obj.liked = 1;   
+                }
+                array_of_genres.push(obj);
+            }
+
+            socket.emit("send liked genres", array_of_genres); 
+            location.href="ratemovies2.html";
+        }
+    </script>
+</body>
+</html>
