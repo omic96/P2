@@ -57,16 +57,18 @@ exports.main = () => {
 
 
     //This will factorize the matrix from scratch. Used if we want to try new settings
-    //factorized_matrix = factorize(user_movie_matrix,60,1,0.002,0.002,false,current_user_index, false);
+    //factorized_matrix = factorize(user_movie_matrix,60,10000,0.002,2,false,current_user_index, false);
 
     // A * B = M (From latex)
     factorized_matrix = math.multiply(saved_factor_matrix_A, saved_factor_matrix_B);
 
-    /* Used for debugging. Prints out ratings from factorized_matrix and user_move_matrix. Used to check how close the factorized_matrix is to user_move_matrix
+    //Used for debugging. Prints out ratings from factorized_matrix and user_move_matrix. Used to check how close the factorized_matrix is to user_move_matrix
+    /*
     for(let i = 0; i < 20;i++) {
         console.log(factorized_matrix[0][i],user_movie_matrix[0][i]);
     }
     */
+   
     // Used in find_best_ratings to find movie information
     for (let entry in movie_data) {
         let movie_ID = movie_data[entry].movieId;
@@ -188,7 +190,7 @@ exports.get_user_ratings_array_factorized = (user_id) => {
 
 //Factorizes a specific user. Uses same parameters as factorize
 exports.factorize_new_user = (the_user_id) => {
-    let new_user_matrix = factorize(get_user_ratings_array(the_user_id), 60, 500, 0.002, 0.002, false, 1, true, the_user_id);
+    let new_user_matrix = factorize(get_user_ratings_array(the_user_id), 60, 500, 0.002, 2, false, 1, true, the_user_id);
     factorized_matrix[users[the_user_id]] = new_user_matrix[0];
 }
 
