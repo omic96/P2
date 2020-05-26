@@ -57,7 +57,7 @@ exports.main = () => {
 
 
     //This will factorize the matrix from scratch. Used if we want to try new settings
-    //factorized_matrix = factorize(user_movie_matrix,60,1,0.002,0.002,true,current_user_index, false);
+    //factorized_matrix = factorize(user_movie_matrix,60,1,0.002,0.002,false,current_user_index, false);
 
     // A * B = M (From latex)
     factorized_matrix = math.multiply(saved_factor_matrix_A, saved_factor_matrix_B);
@@ -312,6 +312,7 @@ exports.make_factor_matrix = (latent_features, count) => {
 exports.find_rmse = (the_matrix, factor_matrix1, factor_matrix2, user_count, movie_count) => {
 
     let total_error = 0;
+    let ratings_count = 0;
     for (let i = 0; i < user_count; i++) {
         for (let j = 0; j < movie_count; j++) {
             let y = the_matrix[i][j];
@@ -319,10 +320,12 @@ exports.find_rmse = (the_matrix, factor_matrix1, factor_matrix2, user_count, mov
             if (y > 0) {
                 let y1 = math.multiply(factor_matrix1[i], exports.column_vector(factor_matrix2, j));
                 total_error += Math.sqrt((Math.pow(y1 - y, 2)));
+                ratings_count++;
             }
         }
     }
-    return total_error;
+
+    return total_error / ratings_count;
 }
 
 
