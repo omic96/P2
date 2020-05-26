@@ -27,6 +27,13 @@
 	
 
 	<script>
+
+        //Check if the user is logged in..
+        if(read_cookie("id") == undefined) {
+            location.href="/";
+            throw new Error("User is not logged in!");
+        }
+        
 		let socket = io();
 
 		let my_user;
